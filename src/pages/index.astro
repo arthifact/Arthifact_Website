@@ -24,14 +24,12 @@ const latestNotes = allNotes.sort(collectionDateSort).slice(0, MAX_NOTES);
 	<section>
 		<h1 class="title mb-6">TRANSMISSION INITIATED.</h1>
 		<p class="mb-4">
-			This node archives interactive systems, visual constructs, and neural logs. Subjects range
-			from game structure and rendered space to machine logic. All compiled for those seeking to
-			build, to learn... or to remember.
+			This site gathers research, projects, and reflections on geometry, simulation, and computation, shared with curiosity, and a wish to make computing feel a little more human.
 		</p>
 		<SocialList />
 	</section>
 	<section class="mt-12">
-		<h2 class="title text-accent mb-6 text-xl"><a href="/posts/">Posts</a></h2>
+		<h2 class="title text-accent mb-6 text-xl"><a href="/posts/">Latest Posts</a></h2>
 		<ul class="space-y-6" role="list">
 			{
 				allPostsByDate.map((p) => (
