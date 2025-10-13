@@ -68,6 +68,12 @@ const project = defineCollection({
 					src: image(),
 				})
 				.optional(),
+			thumbnail: z
+				.object({
+					alt: z.string(),
+					src: image(),
+				})
+				.optional(),
 			publishDate: z
 				.string()
 				.or(z.date())

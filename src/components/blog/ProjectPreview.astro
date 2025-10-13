@@ -7,16 +7,18 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { coverImage, title, description, publishDate } = project.data;
+const { coverImage, thumbnail, title, description, publishDate } = project.data;
+// Use thumbnail if available, otherwise fall back to coverImage
+const displayImage = thumbnail || coverImage;
 ---
 
 <div class="bg-global-text/5 flex min-h-[104px] w-full items-center gap-6 rounded-md px-4 py-3">
 	{
-		coverImage && (
+		displayImage && (
 			<div class="flex aspect-[16/9] w-36 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-zinc-100 dark:bg-zinc-800">
 				<Image
-					src={coverImage.src}
-					alt={coverImage.alt}
+					src={displayImage.src}
+					alt={displayImage.alt}
 					width={288}
 					height={162}
 					class="h-full w-full object-cover"

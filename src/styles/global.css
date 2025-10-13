@@ -18,6 +18,7 @@
 
 @layer base {
 	html {
+		font-size: 100%;
 		color-scheme: light dark;
 		accent-color: var(--color-accent);
 		scrollbar-gutter: stable;
