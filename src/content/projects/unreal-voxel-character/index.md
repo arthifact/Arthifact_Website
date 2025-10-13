@@ -2,7 +2,7 @@
 title: "3D Voxel Character Demo"
 description: "A third-person voxel character in Unreal Engine 5 with interaction and puzzle systems."
 topic: ""
-publishDate: "2 Feb 2024"
+publishDate: "2 Apr 2024"
 updatedDate: ""
 coverImage:
   src: "./cover.png"
