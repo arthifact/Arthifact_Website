@@ -4,15 +4,19 @@ description: "A colorful, 3D interactive educational game aimed at engaging youn
 topic: ""
 publishDate: "6 November 2024"
 updatedDate: ""
+coverImage:
+  src: "./cover.png"
+  alt: "3D learning game  cover"
 thumbnail:
   src: "./cover.png"
   alt: "3D learning game thumbnail"
 tags: []
 ---
-<iframe src="https://www.youtube.com/embed/2_nAor8yDmA" title="3D Educational Game Concept for Kids - November 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen width="100%" height="322"> </iframe>
 
 ## Overview
 A 3D educational game concept that explores how interaction and play can make learning more engaging for children. The project focuses on modular design and accessibility, creating a flexible base for developing and testing new learning experiences.
+
+<iframe src="https://www.youtube.com/embed/2_nAor8yDmA" title="3D Educational Game Concept for Kids - November 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen width="100%" height="322"> </iframe>
 
 ## Background
 Created as a prototype to understand how interactivity can improve early education.  
