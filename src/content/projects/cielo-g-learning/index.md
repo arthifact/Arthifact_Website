@@ -2,14 +2,14 @@
 title: "CIELO-G Learning App"
 description: "An interactive web-app that hosts and showcases classroom-ready Earth science games built with the CIELO-G Learning Framework."
 topic: ""
-publishDate: "7 Sep 2025"
+publishDate: "8 Oct 2025"
 updatedDate: ""
 coverImage:
   src: "./cover.png"
-  alt: "CIELO-G Learning Platform cover"
+  alt: "CIELO-G Learning App cover"
 thumbnail:
   src: "./cover.png"
-  alt: "CIELO-G Learning Platform thumbnail"
+  alt: "CIELO-G Learning App thumbnail"
 tags: []
 ---
 
