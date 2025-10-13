@@ -22,7 +22,7 @@ A 3D spaceship demo made in Godot 4 with physics-based flight, thrust control, a
 Created to test flight-style controls and camera motion in Godot 4. The goal was to make flying feel natural and fun.
 
 ## Development
-Developed entirely in **Godot 4** with rigid body physics, variable thrust, and inertial damping for smooth and realistic motion.
+Developed entirely in **Godot 4** with rigid body physics, variable thrust, and inertial damping for realistic motion.
 
 ## Features
 - Physics-based thrust and rotation system  

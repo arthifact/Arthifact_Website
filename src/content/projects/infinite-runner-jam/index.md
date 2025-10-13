@@ -1,5 +1,5 @@
 ---
-title: "Infinite Runner – Game Jam"
+title: "Infinite Runner (GMTK Game Jam)"
 description: "A fast-paced procedural runner built in 48 hours for a game jam."
 topic: ""
 publishDate: "31 August 2024"
@@ -19,10 +19,10 @@ A fast-paced 3D infinite runner built in 48 hours for the **2024 GMTK Game Jam**
 <iframe src="https://www.youtube.com/embed/bkGItTGZy54" title="3D Educational Game Concept for Kids - November 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen width="100%" height="322"> </iframe>
 
 ## Background
-Developed as an experiment during the jam to explore procedural level design. The project focused on gameplay loops under time constraints.
+Developed to explore procedural level design. The project focused on gameplay loops under time constraints.
 
 ## Development
-Built with **Godot 4** and **Blender**, implementing procedural obstacle generation, wave function collapse placement, adaptive camera movement, and a score-based progression system. Additional focus on Memphis-style visuals.
+Built with **Godot 4** and **Blender**, implementing wave function collapse procedural obstacle placement, adaptive camera movement, and a score-based progression system. Additional focus on Memphis-style visuals.
 
 ## Features
 - Character size scales dynamically with movement speed  
@@ -31,7 +31,7 @@ Built with **Godot 4** and **Blender**, implementing procedural obstacle generat
 - Designed and completed in 48 hours for the jam  
 
 ## Results
-Created a full, replayable game that showcases creative mechanics, clear design, and procedural generation.
+Created a full, replayable game that placed in the top 30% of all submitted entries.
 
 🎮 [Play on itch.io](https://theduckcow.itch.io/wheelie-big-and-small)  
 
