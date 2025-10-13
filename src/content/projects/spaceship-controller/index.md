@@ -14,15 +14,15 @@ tags: []
 ---
 
 ## Overview
-A 3D **spaceship controller demo** showcasing physics-driven motion, dynamic thrust control, and smooth camera tracking. Designed to feel responsive and fluid for gamepad users.
+A 3D spaceship demo made in Godot 4 with physics-based flight, thrust control, and smooth camera movement. Designed for easy and responsive gamepad controls.
 
 <iframe src="https://www.youtube.com/embed/5Go4tlv9tks" title="Godot 4 Spaceship Controller Demo - October 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen width="100%" height="322"></iframe>
 
 ## Background
-Created as a project to explore flight-style controls and cinematic camera motion in **Godot 4**. The goal was to achieve a balance between arcade-style handling and realistic physics.
+Created to test flight-style controls and camera motion in Godot 4. The goal was to make flying feel natural and fun.
 
 ## Development
-Developed entirely in **Godot 4**, with a focus on real-time responsiveness. The motion system combines **rigid body physics**, **variable thrust**, and **inertial damping** control.
+Developed entirely in **Godot 4** with rigid body physics, variable thrust, and inertial damping for smooth and realistic motion.
 
 ## Features
 - Physics-based thrust and rotation system  
@@ -31,7 +31,7 @@ Developed entirely in **Godot 4**, with a focus on real-time responsiveness. The
 - Simple speed and thrust visualization HUD  
 
 ## Results
-The prototype achieved stable and responsive handling, serving as a foundation for future 3D space or flight-based games.
+Runs smoothly and feels good to fly, a solid base for future 3D flight games.
 
 ## Tech Stack
 Godot 4 · GDScript · Blender

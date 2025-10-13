@@ -14,16 +14,15 @@ tags: []
 ---
 
 ## Overview
-A 3D educational game concept that explores how interaction and play can make learning more engaging for children. The project focuses on modular design and accessibility, creating a flexible base for developing and testing new learning experiences.
+A 3D educational game made to show how play and interaction can make learning more fun and engaging for kids. It uses a modular design that makes it easy to build and test new learning activities.
 
 <iframe src="https://www.youtube.com/embed/2_nAor8yDmA" title="3D Educational Game Concept for Kids - November 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen width="100%" height="322"> </iframe>
 
 ## Background
-Created as a prototype to understand how interactivity can improve early education.  
-It examines how small, adaptable mini-games can deliver lessons across different subjects and age groups.
+Built as a prototype to explore how 3D interactive mini-games can help teach different subjects to children.
 
 ## Development
-Built with **Godot 4** and **Blender**, using a modular system that supports multiple mini-playgrounds under one interface. Integrated **Firebase** for login, progress tracking, and analytics to measure how players learn and interact.
+Created with **Godot 4** and **Blender**, using a modular system for multiple mini-games (Playgrounds). Added Firebase for login, progress tracking, and analytics.
 
 ## Features
 - General system with drag, drop, and object interactions  
@@ -32,7 +31,7 @@ Built with **Godot 4** and **Blender**, using a modular system that supports mul
 - Firebase support for data management and analytics  
 
 ## Results
-Early testing showed strong engagement and learning potential, demonstrating that modular, data-driven design can make educational games more effective and adaptable.
+Testing showed strong engagement and learning potential, proving that modular design helps make learning games more flexible and effective.
 
 ## Tech Stack
 Godot 4 · Blender · Firebase · GDScript (Python)

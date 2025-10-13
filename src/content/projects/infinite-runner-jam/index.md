@@ -14,24 +14,24 @@ tags: []
 ---
 
 ## Overview
-A fast-paced 3D infinite runner built in 48 hours for the **2024 GMTK Game Jam**. The game features a unique mechanic where the player’s size dynamically changes with speed, creating a constant balance between agility and control.
+A fast-paced 3D infinite runner built in 48 hours for the **2024 GMTK Game Jam**. The game has a unique mechanic where the player’s size dynamically changes with speed.
 
 <iframe src="https://www.youtube.com/embed/bkGItTGZy54" title="3D Educational Game Concept for Kids - November 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen width="100%" height="322"> </iframe>
 
 ## Background
-Developed as an experiment during the jam to explore procedural level design. The project focused on delivering satisfying gameplay loops under time constraints.
+Developed as an experiment during the jam to explore procedural level design. The project focused on gameplay loops under time constraints.
 
 ## Development
-Built with **Godot 4** and **Blender**, featuring procedural obstacle generation using one-dimensional wave function collapse, adaptive camera movement, and a score-based progression system. Focused on responsive controls and vibrant, Memphis-inspired visuals.
+Built with **Godot 4** and **Blender**, implementing procedural obstacle generation, wave function collapse placement, adaptive camera movement, and a score-based progression system. Additional focus on Memphis-style visuals.
 
 ## Features
 - Character size scales dynamically with movement speed  
 - Procedural obstacle placement and level variation  
-- Fast, reactive controls and clean minimalist memphis-style visuals  
+- Fast, reactive controls and memphis-style visuals  
 - Designed and completed in 48 hours for the jam  
 
 ## Results
-Delivered a complete, replayable game that highlights creative mechanics, design, and use of procedural generation.
+Created a full, replayable game that showcases creative mechanics, clear design, and procedural generation.
 
 🎮 [Play on itch.io](https://theduckcow.itch.io/wheelie-big-and-small)  
 
