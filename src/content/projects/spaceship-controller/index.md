@@ -7,11 +7,10 @@ updatedDate: ""
 coverImage:
   src: "./cover.png"
   alt: "Spaceship controller cover"
-tags: []
 thumbnail:
   src: "./cover.png"
   alt: "Spaceship controller thumbnail"
-tags: ["Godot", "3D", "Physics", "Demo"]
+tags: []
 ---
 
 ## Overview
