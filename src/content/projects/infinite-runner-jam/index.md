@@ -35,7 +35,8 @@ Created a full, replayable game that placed in the top 30% of all submitted entr
 
 🎮 [Play on itch.io](https://theduckcow.itch.io/wheelie-big-and-small)  
 
-💾 [View on GitHub](https://github.com/arthifact/godot_4_infinite_runner)
+::github{repo="https://github.com/arthifact/godot_4_infinite_runner"}
+
 
 ## Tech Stack
 Godot 4 · Blender · GDScript (Python)
