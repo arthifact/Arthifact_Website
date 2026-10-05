@@ -1,13 +1,20 @@
 ---
 import PageLayout from "@/layouts/Base.astro";
-
-const meta = {
-	description: "Oops! It looks like this page is lost in space!",
-	title: "Oops! You found a missing page!",
-};
 ---
 
-<PageLayout meta={meta}>
-	<h1 class="title mb-6">404 | Oops something went wrong</h1>
-	<p class="mb-8">Please use the navigation to find your way back</p>
-</PageLayout>
+<PageLayout
+  meta={{
+    title: "Page not found",
+    noindex: true,
+    description:
+      "This page could not be found. Explore Gabriel I. Alonso’s portfolio.",
+  }}
+  ><div class="page-intro">
+    <p class="eyebrow">404 / Page not found</p><h1>
+      A missing page<span class="accent-dot">.</span>
+    </h1><p class="intro-description">
+      The page may have moved. You can find research, projects, art, and writing
+      through the navigation above.
+    </p><a class="text-link mono" href="/">Return home ↗</a>
+  </div></PageLayout
+>

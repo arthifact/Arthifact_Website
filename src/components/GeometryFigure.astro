@@ -1,0 +1,81 @@
+---
+// Project a triangulated torus at build time. The browser receives only an SVG.
+const columns = 40;
+const rows = 16;
+function point(u: number, v: number) {
+  const a = (u / columns) * Math.PI * 2;
+  const b = (v / rows) * Math.PI * 2;
+  const r = 1.8 + 0.68 * Math.cos(b);
+  const x = r * Math.cos(a),
+    y = r * Math.sin(a),
+    z = 0.68 * Math.sin(b);
+  const tilt = 0.9;
+  const depth = y * Math.cos(tilt) - z * Math.sin(tilt);
+  return {
+    x: 200 + x * 65,
+    y: 230 + (y * Math.sin(tilt) + z * Math.cos(tilt)) * 65,
+    depth,
+  };
+}
+const faces = [];
+for (let u = 0; u < columns; u++) {
+  for (let v = 0; v < rows; v++) {
+    const a = point(u, v),
+      b = point(u + 1, v),
+      c = point(u + 1, v + 1),
+      d = point(u, v + 1);
+    for (const triangle of [
+      [a, b, c],
+      [a, c, d],
+    ]) {
+      faces.push({
+        points: triangle
+          .map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+          .join(" "),
+        depth: triangle.reduce((sum, p) => sum + p.depth, 0) / 3,
+      });
+    }
+  }
+}
+faces.sort((a, b) => a.depth - b.depth);
+---
+
+<figure class="geometry-figure">
+  <div class="figure-top mono">
+    <span>Fig. 01</span><span>Surface study</span>
+  </div>
+  <svg viewBox="0 0 400 460" aria-hidden="true" class="surface-svg">
+    <path
+      d="M24 34h16m-8-8v16M360 34h16m-8-8v16M24 426h16m-8-8v16M360 426h16m-8-8v16"
+      stroke="#637565"
+      stroke-width="0.7"></path>
+    <g stroke="#435647" stroke-width="0.5" stroke-linejoin="round">
+      {
+        faces.map((face) => (
+          <polygon
+            points={face.points}
+            fill={
+              face.depth > 0.8
+                ? "#c9d2bd"
+                : face.depth > -0.8
+                  ? "#dde3d0"
+                  : "#eef0e2"
+            }
+          />
+        ))
+      }
+    </g>
+    <g fill="none" stroke="#637565" stroke-width="0.65"
+      ><path d="M49 376h38m-38 0v-38m0 38 22-20"></path></g
+    >
+    <g fill="#526453" font-family="monospace" font-size="9"
+      ><text x="93" y="379">x</text><text x="46" y="331">z</text><text
+        x="76"
+        y="353">y</text
+      ></g
+    >
+  </svg>
+  <figcaption class="mono">
+    <span>Geometry, in perspective.</span><span>ℝ³</span>
+  </figcaption>
+</figure>

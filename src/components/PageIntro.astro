@@ -1,0 +1,14 @@
+---
+interface Props {
+  number: string;
+  title: string;
+  description: string;
+}
+const { number, title, description } = Astro.props;
+---
+
+<div class="page-intro">
+  <p class="eyebrow">{number} / Index</p><h1>
+    {title}<span class="accent-dot">.</span>
+  </h1><p class="intro-description">{description}</p>
+</div>

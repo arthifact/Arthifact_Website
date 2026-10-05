@@ -1,4 +1,6 @@
 ---
+kind: project
+featured: false
 title: "Graph Explorer"
 description: "A real-time visualization tool for traversing and interacting with graph."
 topic: ""
@@ -13,4 +15,4 @@ tags: []
 ## Overview  
 An interactive **Unity graph explorer** that visualizes mathematical functions in real time. We can tweak the function, density, and resolution while a **shader dynamically changes colors based on position**.
 
-<iframe src="https://www.youtube.com/embed/rfPS7lGVAMU" title="Graph Explorer - Real-Time Function Visualization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen width="100%" height="322"></iframe>
+[Watch the project video on YouTube ↗](https://www.youtube.com/watch?v=rfPS7lGVAMU)

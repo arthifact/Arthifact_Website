@@ -1,59 +1,100 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
-import SocialList from "@/components/SocialList.astro";
-import PostPreview from "@/components/blog/PostPreview.astro";
-import Note from "@/components/note/Note.astro";
-import { getAllPosts } from "@/data/post";
+import { getCollection } from "astro:content";
+import GeometryFigure from "@/components/GeometryFigure.astro";
+import WorkCard from "@/components/WorkCard.astro";
 import PageLayout from "@/layouts/Base.astro";
-import { collectionDateSort } from "@/utils/date";
-
-// Posts
-const MAX_POSTS = 5;
-const allPosts = await getAllPosts();
-const allPostsByDate = allPosts
-	.sort(collectionDateSort)
-	.slice(0, MAX_POSTS) as CollectionEntry<"post">[];
-
-// Notes
-const MAX_NOTES = 5;
-const allNotes = await getCollection("note");
-const latestNotes = allNotes.sort(collectionDateSort).slice(0, MAX_NOTES);
+const projects = await getCollection("project");
+const selected = [
+  "article-exploring-dmesh",
+  "cielo-g-framework",
+  "lego-utep-dino-animation",
+]
+  .map((id) => projects.find((p) => p.id === id))
+  .filter((p) => p !== undefined);
 ---
 
-<PageLayout meta={{ title: "Home" }}>
-	<section>
-		<h1 class="title mb-6">TRANSMISSION INITIATED.</h1>
-		<p class="mb-4">
-			This site gathers research, projects, and reflections on geometry, simulation, and computation, shared with curiosity, and a wish to make computing feel a little more human.
-		</p>
-		<SocialList />
-	</section>
-	<section class="mt-12">
-		<h2 class="title text-accent mb-6 text-xl"><a href="/posts/">Latest Posts</a></h2>
-		<ul class="space-y-6" role="list">
-			{
-				allPostsByDate.map((p) => (
-					<li class="grid gap-2 sm:grid-cols-[auto_1fr]">
-						<PostPreview post={p} />
-					</li>
-				))
-			}
-		</ul>
-	</section>
-	{
-		latestNotes.length > 0 && (
-			<section class="mt-12">
-				<h2 class="title text-accent mb-6 text-xl">
-					<a href="/notes/">Notes</a>
-				</h2>
-				<ul class="space-y-6" role="list">
-					{latestNotes.map((note) => (
-						<li>
-							<Note note={note} as="h3" isPreview />
-						</li>
-					))}
-				</ul>
-			</section>
-		)
-	}
+<PageLayout meta={{ title: "Geometry, computation & art" }}>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-name-panel">
+      <p class="eyebrow hero-label">
+        <span class="tiny-dot" aria-hidden="true"></span>Research / making /
+        exploring
+      </p>
+      <div class="hero-name">
+        <p class="hero-kicker">A portfolio of</p><h1 id="hero-title">
+          Gabriel I.<br />Alonso<span class="accent-dot">.</span>
+        </h1><p class="hero-subtitle">
+          At the intersection of geometry,<br />computation, and visual
+          expression.
+        </p>
+      </div>
+      <a class="text-link mono" href="/about/"
+        >About me <span aria-hidden="true">↗</span></a
+      >
+    </div>
+    <GeometryFigure />
+    <div class="hero-right">
+      <div class="hero-focus">
+        <p class="eyebrow">Research direction</p><h2>
+          Thinking<br />through<br /><em>geometry.</em>
+        </h2><p>
+          Geometry processing.<br />Differentiable representations.<br
+          />Simulation & computer graphics.
+        </p><a href="/research/" class="text-link mono"
+          >Explore research <span aria-hidden="true">↗</span></a>
+      </div>
+      <nav class="hero-index" aria-label="Portfolio sections">
+        <a href="/projects/"
+          ><span class="mono">02</span><span>Projects</span><span
+            aria-hidden="true">↗</span
+          ></a
+        >
+        <a href="/art/"
+          ><span class="mono">03</span><span>Art</span><span aria-hidden="true"
+            >↗</span
+          ></a
+        >
+        <a href="/blog/"
+          ><span class="mono">04</span><span>Blog</span><span aria-hidden="true"
+            >↗</span
+          ></a
+        >
+      </nav>
+    </div>
+  </section>
+  <div class="hero-caption mono">
+    <span>Selected work & ongoing interests</span><span
+      >Gabriel I. Alonso / Arthifact</span>
+  </div>
+  <section class="selected-section" aria-labelledby="selected-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">A few things I’ve been making</p><h2
+          id="selected-title"
+        >
+          Selected work
+        </h2>
+      </div><a href="/projects/" class="text-link mono"
+        >Browse projects <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="selected-grid">
+      {
+        selected.map((project, index) => (
+          <WorkCard project={project} index={index} />
+        ))
+      }
+    </div>
+  </section>
+  <section class="home-about" aria-labelledby="home-about-title">
+    <p class="eyebrow">Beyond the surface</p><div>
+      <h2 id="home-about-title">
+        A curiosity for shape.<br /><em>A love of making things.</em>
+      </h2><p>
+        My work brings together geometric ideas, interactive systems, and 3D
+        art. Here you’ll find research writing, open-source tools, and
+        experiments in motion and form.
+      </p><a href="/about/" class="text-link mono"
+        >More about me <span aria-hidden="true">↗</span></a>
+    </div><div class="home-about-mark" aria-hidden="true">∂</div>
+  </section>
 </PageLayout>

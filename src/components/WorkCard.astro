@@ -1,0 +1,56 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+interface Props {
+  project: CollectionEntry<"project">;
+  index?: number;
+}
+const { project, index } = Astro.props;
+const { title, description, coverImage, kind, publishDate } = project.data;
+---
+
+<article class="work-card">
+  <a
+    class="work-image"
+    href={`/projects/${project.id}/`}
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    {
+      coverImage && (
+        <Image
+          src={coverImage.src}
+          alt=""
+          widths={[400, 640, 960]}
+          sizes="(max-width: 700px) 100vw, 33vw"
+          width={640}
+          height={360}
+          format="webp"
+          quality={78}
+          loading="lazy"
+        />
+      )
+    }
+  </a>
+  <div class="work-copy">
+    <p class="eyebrow">
+      <span
+        >{
+          index !== undefined ? `${String(index + 1).padStart(2, "0")} / ` : ""
+        }{
+          kind === "research"
+            ? "Research essay"
+            : kind === "art"
+              ? "Art & animation"
+              : "Project"
+        }</span
+      ><time datetime={publishDate.toISOString()}
+        >{publishDate.getUTCFullYear()}</time>
+    </p>
+    <h3>
+      <a href={`/projects/${project.id}/`}
+        >{title}<span aria-hidden="true" class="title-arrow">↗</span></a>
+    </h3>
+    <p class="work-description">{description}</p>
+  </div>
+</article>

@@ -1,110 +1,61 @@
-# Arthifact Website (astro-cactus)
+# Gabriel I. Alonso — portfolio
 
-Personal/portfolio website built with Astro and Tailwind CSS. This repository contains content (posts, notes, projects) and the site code used to build and deploy a static site.
+A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, quiet sage panels, and a triangulated surface generated at build time.
 
-## Tech stack
+## Run and verify
 
-- Astro (static site generator)
-- Tailwind CSS
-- Pagefind for on-site search
-- npm for package management (used by CI)
-- TypeScript
+Use Node 22.18 or newer and npm. The committed lockfile is the source of truth.
 
-## Quick start
-
-Prerequisites:
-
-- Node.js (LTS recommended)
-
-
-This project uses npm (the GitHub Actions CI uses npm). Use the npm commands below to run and build the site locally so behavior matches CI.
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run locally in development mode:
-
-```bash
+```sh
+npm ci
 npm run dev
-```
-
-Build for production:
-
-```bash
+npm run check
 npm run build
-```
-
-
-Notes: the `postbuild` script runs Pagefind to generate the search index for the built site. After `npm run build`, run the postbuild step to generate the search index:
-
-```bash
-# after `npm run build`
-npm run postbuild
-```
-
-Preview the production build locally:
-
-```bash
+npm run verify:site
 npm run preview
 ```
 
-Available scripts (from `package.json`):
+`npm run build` also builds the Pagefind index and verifies the generated site. The core portfolio pages ship no client JavaScript and use system fonts; there are no external font requests or video players on initial load. The interactive Earth model loads its third-party viewer only after the reader requests it.
 
-- `dev` / `start` — start Astro in dev mode
-- `build` — build the site for production
-- `postbuild` — generate Pagefind search index (`pagefind --site dist`)
-- `preview` — preview the production build
-- `lint` — run Biome linter
-- `format` — format code (runs code and imports formatting)
-- `check` — run Astro checks
+The verification command checks every built page for broken local links and anchors, image dimensions, a main heading, the CV, RSS content, and a 24 KiB gzipped HTML budget for the core pages. GitHub Actions runs type checks, the production build, and verification on pull requests.
 
-Note about CI package manager
+## Add and organize work
 
-The repository's GitHub Actions workflow (`.github/workflows/ci.yml`) currently uses npm to install and build the project. For best parity with CI, consider using the same package manager locally (npm) when testing CI-related issues. The README above already lists the npm equivalents for all important commands.
+Existing project URLs stay under `/projects/<slug>/`, including entries shown in Research or Art. Each item has its own Markdown folder in `src/content/projects/` and a local cover image.
 
-## Project structure (important parts)
+```yaml
+---
+title: "Your project title"
+description: "A concise description of the work."
+kind: project # research | project | art
+featured: false
+publishDate: "2026-10-05"
+coverImage:
+  src: "./cover.png"
+  alt: "Describe what the image shows."
+---
+```
 
-- `src/` — site source code
-  - `components/` — reusable UI components
-  - `content/` — markdown content (posts, projects, notes)
-  - `layouts/` — page layouts
-  - `pages/` — route pages
-  - `styles/` — global styles and Tailwind integration
-  - `plugins/` — remark/rehype plugins
-- `public/` — static assets
-- `package.json` — scripts & dependencies
-- `astro.config.ts`, `tailwind.config.ts`, `tsconfig.json`
+- `kind` places the item in Research, Projects, or Art.
+- `featured: true` puts an item first in the project index.
+- Edit the `selected` IDs in `src/pages/index.astro` to change the three homepage selections. Astro normalizes IDs: the DMesh++ folder becomes `article-exploring-dmesh`.
+- Keep covers local. Astro produces responsive WebP images automatically.
+- Link to demonstrations and videos from the Markdown. Repository directives such as `::github{repo="arthifact/example"}` render static links.
+
+## Write
+
+Add Markdown posts in `src/content/post/` with `title`, `description`, and `publishDate`; optional fields include `tags`, `coverImage`, and `draft`. Notes live in `src/content/note/`. The Blog and main RSS feed collect published posts, research essays, and notes. A post marked `unlisted: true` keeps its URL but stays out of the blog and feed and receives `noindex` metadata. The original Markdown demo is preserved this way.
+
+## Update identity and design
+
+- Name, description, domain, and navigation: `src/site.config.ts`.
+- Biography and contact links: `src/pages/about.astro`.
+- CV: replace `public/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf` when needed.
+- Typography, spacing, mobile layout, and print styles: `src/styles/global.css`.
+- Social preview: `public/social-card.png`; favicon: `public/icon.svg`.
 
 ## Deployment
 
-This repository is configured to deploy to **GitHub Pages** using GitHub Actions. If you fork or copy this repository, it should be ready to deploy automatically.
+GitHub Pages deploys pushes to `main` through `.github/workflows/deploy.yml`. The custom domain and `CNAME` remain configured. Review a redesign pull request before merging; merging publishes the changes through the existing workflow.
 
-**GitHub Actions workflows:**
-- `.github/workflows/deploy.yml` — deploys to GitHub Pages on push to `main`
-- `.github/workflows/ci.yml` — runs linting and build checks on PRs and pushes
-
-**Setup instructions:**
-
-1. Fork or copy this repository to your GitHub account.
-2. Go to your repository's **Settings → Pages**.
-3. Set the source to **"GitHub Actions"** (not a branch).
-4. Push to the `main` branch to trigger the deployment.
-
-**Custom domain:**
-
-This repository uses a custom domain from Namecheap. If you want to use your own custom domain:
-- Add a `CNAME` file with your domain (already present in this repo).
-- Configure DNS settings with your domain provider.
-
-If you don't have a custom domain, GitHub Pages will serve your site at:
-- `https://username.github.io/repository-name/` (if the repo is not named `username.github.io`)
-- `https://username.github.io/` (if the repo is named `username.github.io`)
-
-You may need to update the `site` config in `astro.config.ts` for deploying properly.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Built from the Astro Cactus foundation. See [LICENSE](LICENSE).

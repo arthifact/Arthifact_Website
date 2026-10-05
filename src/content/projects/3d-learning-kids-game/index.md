@@ -1,4 +1,6 @@
 ---
+kind: project
+featured: false
 title: "3D Learning Game for Kids"
 description: "A colorful, 3D interactive educational game aimed at engaging young learners."
 topic: ""
@@ -16,7 +18,7 @@ tags: []
 ## Overview
 A 3D educational game made to show how play and interaction can make learning more fun and engaging for kids. It uses a modular design that makes it easy to build and test new learning activities.
 
-<iframe src="https://www.youtube.com/embed/2_nAor8yDmA" title="3D Educational Game Concept for Kids - November 2024" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen width="100%" height="322"> </iframe>
+[Watch the project video on YouTube ↗](https://www.youtube.com/watch?v=2_nAor8yDmA)
 
 ## Background
 Built as a prototype to explore how 3D interactive mini-games can help teach different subjects to children.

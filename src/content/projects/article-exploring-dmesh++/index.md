@@ -1,4 +1,6 @@
 ---
+kind: research
+featured: true
 title: "From Triangles to Gradients: Exploring DMesh++"
 description: "Research article on the DMesh++ differentiable meshing framework, authored during MIT SGI 2025."
 publishDate: "26 Sep 2025"
@@ -13,7 +15,7 @@ A brief exploration of **DMesh++**, a differentiable meshing framework connectin
 
 📄 [Read the Article](https://summergeometry.org/sgi2025/dmesh/)
 
-[![DMesh++ Teaser](https://summergeometry.org/sgi2025/wp-content/uploads/2025/08/teaser_low-2048x787.jpg)](https://summergeometry.org/sgi2025/dmesh/)
+
 
 
 Authored by **Gabriel Isaac Alonso Serrato**  

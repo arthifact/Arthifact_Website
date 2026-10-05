@@ -1,66 +1,60 @@
 ---
+import PageIntro from "@/components/PageIntro.astro";
 import PageLayout from "@/layouts/Base.astro";
-
-const meta = {
-	description: "About Gabriel and the Arthifact website.",
-	title: "About",
-};
 ---
 
-<PageLayout meta={meta}>
-	<h1 class="title mb-6">About</h1>
-	<div class="prose prose-sm prose-cactus max-w-none">
-		<p>
-			I’m Gabriel Isaac Alonso Serrato, a Computer Science senior at UTEP. I explore how geometry, computation, and physics converge in digital systems.
-		</p>
-		<p>
-			On this site, you'll find my projects, blog posts, and notes related to my interests.
-		</p>
-		<h2>Curriculum Vitae</h2>
-		<ul>
-			<li>
-				<a
-					href="/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf"
-					class="cactus-link"
-					target="_blank"
-					rel="noopener">View my CV (PDF)</a
-				>
-			</li>
-		</ul>
-		<h2>Contact & Links</h2>
-		<ul>
-			<li>
-				LinkedIn: <a
-					href="https://www.linkedin.com/in/gialonsoser/"
-					class="cactus-link"
-					target="_blank"
-					rel="noopener">linkedin.com/in/gialonsoser</a
-				>
-			</li>
-			<li>
-				GitHub: <a
-					href="https://github.com/arthifact"
-					class="cactus-link"
-					target="_blank"
-					rel="noopener">github.com/arthifact</a
-				>
-			</li>
-			<li>
-				YouTube: <a
-					href="https://www.youtube.com/@arthifact"
-					class="cactus-link"
-					target="_blank"
-					rel="noopener">youtube.com/@arthifact</a
-				>
-			</li>
-			<li>
-				Instagram: <a
-					href="https://www.instagram.com/arthifact_/"
-					class="cactus-link"
-					target="_blank"
-					rel="noopener">@arthifact_</a
-				>
-			</li>
-		</ul>
-	</div>
+<PageLayout
+  meta={{
+    title: "About",
+    description:
+      "About Gabriel I. Alonso — research interests, creative work, CV, and links.",
+  }}
+>
+  <PageIntro
+    number="05"
+    title="About"
+    description="I’m Gabriel I. Alonso. I explore the connections between geometry, computation, and visual expression."
+  />
+  <div class="about-layout">
+    <div class="about-text">
+      <p>
+        My full name is Gabriel Isaac Alonso Serrato, and I also make things as <em
+          >Arthifact</em
+        >. My background brings together computer science and environmental
+        engineering; my research direction is geometry processing.
+      </p><p>
+        I’m interested in how geometric representations connect to simulation
+        and computer graphics. During the Summer Geometry Initiative in 2025, I
+        explored differentiable meshing and co-authored an <a
+          href="https://summergeometry.org/sgi2025/dmesh/">essay on DMesh++</a
+        >.
+      </p><p>
+        Alongside research, I build interactive systems and open-source tools,
+        and create 3D art and animation. This site collects that work, together
+        with the notes I make along the way.
+      </p>
+    </div>
+    <aside class="about-sidebar" aria-label="CV and contact links">
+      <h2 class="eyebrow">Curriculum vitae</h2><ul>
+        <li>
+          <a href="/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf"
+            >View CV (PDF)<span aria-hidden="true">↗</span></a>
+        </li>
+      </ul><h2 class="eyebrow">Find me elsewhere</h2><ul>
+        <li>
+          <a href="https://github.com/arthifact"
+            >GitHub<span aria-hidden="true">↗</span></a>
+        </li><li>
+          <a href="https://www.linkedin.com/in/gialonsoser/"
+            >LinkedIn<span aria-hidden="true">↗</span></a>
+        </li><li>
+          <a href="https://www.youtube.com/@arthifact"
+            >YouTube<span aria-hidden="true">↗</span></a>
+        </li><li>
+          <a href="https://www.instagram.com/arthifact_/"
+            >Instagram<span aria-hidden="true">↗</span></a>
+        </li>
+      </ul>
+    </aside>
+  </div>
 </PageLayout>
