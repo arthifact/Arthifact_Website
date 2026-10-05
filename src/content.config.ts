@@ -10,6 +10,7 @@ const titleSchema = z.string().max(60);
 
 const baseSchema = z.object({
   title: titleSchema,
+  authors: z.array(z.string()).min(1).default(["Gabriel I. Alonso"]),
 });
 
 const post = defineCollection({

@@ -10,6 +10,7 @@ interface Props {
   priority?: boolean;
   imageSizes?: string;
   imageFit?: "cover" | "contain";
+  headingLevel?: 2 | 3;
 }
 const {
   project,
@@ -20,8 +21,10 @@ const {
   priority = false,
   imageSizes = "(max-width: 470px) 100vw, (max-width: 760px) 50vw, 33vw",
   imageFit = "cover",
+  headingLevel = 2,
 } = Astro.props;
 const { coverImage, kind, publishDate } = project.data;
+const Heading = headingLevel === 2 ? "h2" : "h3";
 ---
 
 <article class="work-card">
@@ -68,11 +71,11 @@ const { coverImage, kind, publishDate } = project.data;
         >{publishDate.getUTCFullYear()}</time
       >
     </p>
-    <h3>
+    <Heading class="work-title">
       <a href={`/projects/${project.id}/`}
         >{title}<span aria-hidden="true" class="title-arrow">↗</span></a
       >
-    </h3>
+    </Heading>
     <p class="work-description">{description}</p>
   </div>
 </article>

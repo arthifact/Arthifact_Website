@@ -2,6 +2,7 @@
 kind: research
 featured: true
 title: "From Triangles to Gradients: Exploring DMesh++"
+authors: ["Gabriel I. Alonso", "Amruth Srivathsan"]
 description: "Research article on the DMesh++ differentiable meshing framework, authored during MIT SGI 2025."
 publishDate: "26 Sep 2025"
 coverImage:

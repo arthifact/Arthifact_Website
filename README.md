@@ -46,6 +46,12 @@ coverImage:
 
 Add Markdown posts in `src/content/post/` with `title`, `description`, and `publishDate`; optional fields include `tags`, `coverImage`, and `draft`. Notes live in `src/content/note/`. The Blog and main RSS feed collect published posts, research essays, and notes. A post marked `unlisted: true` keeps its URL but stays out of the blog and feed and receives `noindex` metadata. The original Markdown demo is preserved this way.
 
+Research writeups, projects, art, posts, and notes share one paper layout: a centered 720px reading column, serif type, title, author, date, summary, and text. There is no contents sidebar or automatic cover banner. Covers remain thumbnails on index pages; insert article figures in the Markdown where they belong. Normal headings, lists, links, tables, and footnotes work. Print styles remove navigation and use a white background.
+
+Start from `examples/paper.md`, which is outside the published content folders. Copy it into `src/content/post/<slug>/index.md`, set the title, summary, and date, and write the body. Remove `unlisted: true` when you want it in the blog and RSS. For a project, put it in `src/content/projects/<slug>/index.md` with `kind: research`, `project`, or `art` instead. Authors default to Gabriel I. Alonso; add an `authors` array for coauthors.
+
+LaTeX equations work in both `.md` and `.mdx`: use `$x^2$` inline or `$$` on separate lines around a display equation. KaTeX renders the equations to HTML and MathML during the build, so the reader needs no math JavaScript. Math styles and fonts are served locally and linked only on articles containing equations, with font swapping enabled. Wide display equations scroll within the reading column and can be focused with the keyboard. Unsupported or invalid equations fail the build; use [KaTeX’s supported commands](https://katex.org/docs/supported). This is a web writing format with LaTeX math, not a compiler for entire `.tex` documents.
+
 ## Update identity and design
 
 - Name, description, domain, and navigation: `src/site.config.ts`.

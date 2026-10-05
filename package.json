@@ -27,18 +27,21 @@
     "astro-robots-txt": "^1.0.0",
     "cssnano": "^7.0.7",
     "hastscript": "^9.0.0",
+    "katex": "^0.16.47",
     "mdast-util-directive": "^3.0.0",
     "mdast-util-to-markdown": "^2.1.2",
     "mdast-util-to-string": "^4.0.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-external-links": "^3.0.0",
+    "rehype-katex": "^7.0.1",
     "rehype-unwrap-images": "^1.0.0",
     "remark-directive": "^4.0.0",
+    "remark-math": "^6.0.0",
     "satori": "0.15.2",
     "satori-html": "^0.3.2",
     "sharp": "^0.35.5",
     "unified": "^11.0.5",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",

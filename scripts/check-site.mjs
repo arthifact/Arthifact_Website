@@ -45,6 +45,29 @@ for (const file of pages) {
     /<meta[^>]+name="description"/.test(markup),
     `${page}: missing description`,
   );
+  const hasMath = /class="[^"]*\bkatex\b/.test(markup);
+  check(
+    hasMath === markup.includes("data-math-styles"),
+    `${page}: math styles must load only when the page contains equations`,
+  );
+  check(
+    !markup.includes('class="katex-error"'),
+    `${page}: invalid LaTeX equation`,
+  );
+  if (hasMath) {
+    check(
+      /<math\b[^>]+xmlns="http:\/\/www.w3.org\/1998\/Math\/MathML"/.test(
+        markup,
+      ) && markup.includes('class="katex-html" aria-hidden="true"'),
+      `${page}: equations must include MathML and hide duplicate visual markup from assistive tools`,
+    );
+  }
+  if (markup.includes('class="paper"')) {
+    check(
+      !markup.includes("article-toc") && !markup.includes("On this page"),
+      `${page}: paper layout must not include a table-of-contents sidebar`,
+    );
+  }
   for (const match of markup.matchAll(/<(a|img|link|script)\b[^>]*>/g)) {
     const tag = match[0];
     const url = tag.match(/\b(?:href|src)="([^"]+)"/)?.[1];

@@ -20,24 +20,11 @@ const research = (
     title="Research"
     description="I’m interested in geometry, the environment, and art. I like understanding how things work and using what I learn in practical projects. My research interests include geometry processing, differentiable representations, simulation, and computer graphics."
   />
-  <section aria-labelledby="research-writing-title">
-    <div class="section-heading">
-      <div>
-        <h2 id="research-writing-title">Research writing</h2>
-      </div><span class="mono">SGI 2025</span>
-    </div><div class="research-list">
-      {
-        research.map((project, index) => (
-          <WorkCard project={project} index={index} />
-        ))
-      }
-    </div>
+  <section class="research-list" aria-label="Research work">
+    {
+      research.map((project, index) => (
+        <WorkCard project={project} index={index} imageFit="contain" />
+      ))
+    }
   </section>
-  <p class="research-context">
-    The DMesh++ essay was written with Amruth Srivathsan during the Summer
-    Geometry Initiative, under the mentorship of Yi Zhuo at Adobe Research. <a
-      class="text-link"
-      href="https://summergeometry.org/sgi2025/dmesh/"
-      >Read the original essay ↗</a>
-  </p>
 </PageLayout>

@@ -12,9 +12,11 @@ import rehypeExternalLinks from "rehype-external-links";
 import rehypeUnwrapImages from "rehype-unwrap-images";
 // Remark plugins
 import remarkDirective from "remark-directive"; /* Handle ::: directives as nodes */
+import remarkMath from "remark-math";
 import { remarkAdmonitions } from "./src/plugins/remark-admonitions"; /* Add admonitions */
 import { remarkGithubCard } from "./src/plugins/remark-github-card";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time";
+import { rehypeMath } from "./src/plugins/rehype-math";
 import { expressiveCodeOptions, siteConfig } from "./src/site.config";
 
 // https://astro.build/config
@@ -34,6 +36,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       rehypePlugins: [
+        rehypeMath,
         rehypeHeadingIds,
         [
           rehypeAutolinkHeadings,
@@ -49,6 +52,7 @@ export default defineConfig({
         rehypeUnwrapImages,
       ],
       remarkPlugins: [
+        remarkMath,
         remarkReadingTime,
         remarkDirective,
         remarkGithubCard,

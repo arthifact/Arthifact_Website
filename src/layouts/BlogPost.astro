@@ -1,6 +1,6 @@
 ---
-import { type CollectionEntry, render } from "astro:content";
-import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import mathStyles from "@/styles/math.css?url";
 import BaseLayout from "./Base.astro";
 interface Props {
   post:
@@ -9,10 +9,15 @@ interface Props {
     | CollectionEntry<"note">;
 }
 const { post } = Astro.props;
-const { title, description, publishDate } = post.data;
+// The Markdown loader can log a rendering error and retain an entry without HTML.
+if (post.filePath?.endsWith(".md") && !post.rendered) {
+  throw new Error(
+    `Could not render ${post.collection}/${post.id}. Fix Markdown or LaTeX errors before building.`,
+  );
+}
+const { title, description, publishDate, authors } = post.data;
 const updatedDate =
   "updatedDate" in post.data ? post.data.updatedDate : undefined;
-const coverImage = "coverImage" in post.data ? post.data.coverImage : undefined;
 const ogImage = "ogImage" in post.data ? post.data.ogImage : undefined;
 const kind = "kind" in post.data ? post.data.kind : "blog";
 const backLink =
@@ -32,8 +37,8 @@ const backLabel =
         ? "Projects"
         : "Blog";
 const articleDate = publishDate.toISOString();
-const { headings } = await render(post);
-const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const content = await Astro.slots.render("default");
+const hasMath = /class="[^"]*\bkatex\b/.test(content);
 ---
 
 <BaseLayout
@@ -45,22 +50,23 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
     noindex: "unlisted" in post.data && post.data.unlisted,
   }}
 >
+  <Fragment slot="head">
+    {hasMath && <link rel="stylesheet" href={mathStyles} data-math-styles />}
+  </Fragment>
   <article
+    class="paper"
     data-pagefind-body={!("unlisted" in post.data && post.data.unlisted) ||
       undefined}
   >
     <div class="article-topline mono">
-      <a href={backLink}>← {backLabel}</a><span>Gabriel I. Alonso</span>
+      <a href={backLink}>← {backLabel}</a>
     </div>
     <header class="article-heading">
-      <p class="eyebrow">
-        {
-          kind === "research"
-            ? "Research essay"
-            : kind === "art"
-              ? "Art & animation"
-              : kind
-        } / <time datetime={articleDate}
+      <h1>{title}</h1>
+      <p class="article-byline">
+        <span>{authors.join(" · ")}</span><span aria-hidden="true">
+          ·
+        </span><time datetime={articleDate}
           >{
             publishDate.toLocaleDateString("en-GB", {
               day: "numeric",
@@ -70,55 +76,23 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
             })
           }</time
         >
-      </p><h1>{title}</h1><p class="article-description">{description}</p>{
+      </p>{description && <p class="article-description">{description}</p>}{
         updatedDate && (
           <p class="eyebrow">
             Updated{" "}
-            {updatedDate.toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-              timeZone: "UTC",
-            })}
+            <time datetime={updatedDate.toISOString()}>
+              {updatedDate.toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+                timeZone: "UTC",
+              })}
+            </time>
           </p>
-        )
-      }{
-        coverImage && (
-          <div class="article-cover">
-            <Image
-              src={coverImage.src}
-              alt={coverImage.alt}
-              widths={[640, 960, 1440]}
-              sizes="(max-width: 960px) 100vw, 920px"
-              width={960}
-              format="webp"
-              quality={82}
-              loading="eager"
-            />
-          </div>
         )
       }
     </header>
-    <div class="article-layout">
-      <div class="prose article-prose"><slot /></div>{
-        toc.length > 0 && (
-          <details class="article-toc" open>
-            <>
-              <summary>On this page</summary>
-              <nav aria-label="Table of contents">
-                <ol>
-                  {toc.map((heading) => (
-                    <li data-depth={heading.depth}>
-                      <a href={`#${heading.slug}`}>{heading.text}</a>
-                    </li>
-                  ))}
-                </ol>
-              </nav>
-            </>
-          </details>
-        )
-      }
-    </div>
+    <div class="prose article-prose" set:html={content} />
   </article>
   <div class="article-bottom mono">
     <a href={backLink}>← Back to {backLabel.toLowerCase()}</a><a href="#main"
