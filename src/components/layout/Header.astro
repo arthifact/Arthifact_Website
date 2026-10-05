@@ -12,6 +12,11 @@ if (pathname.startsWith("/projects/") && pathname !== "/projects/") {
   if (project?.data.kind === "art") activePath = "/art/";
 }
 if (pathname.startsWith("/notes/")) activePath = "/blog/";
+const isCurrent = (path: string) =>
+  path === "/"
+    ? pathname === "/"
+    : activePath.startsWith(path) ||
+      (path === "/blog/" && pathname.startsWith("/posts/"));
 ---
 
 <header class="site-header" data-pagefind-ignore>
@@ -23,12 +28,7 @@ if (pathname.startsWith("/notes/")) activePath = "/blog/";
       menuLinks.map((link) => (
         <a
           href={link.path}
-          aria-current={
-            activePath.startsWith(link.path) ||
-            (link.path === "/blog/" && pathname.startsWith("/posts/"))
-              ? "page"
-              : undefined
-          }
+          aria-current={isCurrent(link.path) ? "page" : undefined}
         >
           {link.title}
         </a>
