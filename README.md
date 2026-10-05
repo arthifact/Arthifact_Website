@@ -60,7 +60,8 @@ LaTeX equations work in both `.md` and `.mdx`: use `$x^2$` inline or `$$` on sep
 - CV: replace `public/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf` when needed.
 - Typography, spacing, mobile layout, and print styles: `src/styles/global.css`.
 - Sea artwork: `src/components/OceanStill.astro` and `src/assets/ponyo/`. All 50 stills are local, optimized WebP files. A small inline script picks one per homepage load, avoiding the previous frame in the same tab when session storage is available. Only the chosen image is requested; frame 050 is the no-JavaScript and image-error fallback. Image descriptions live in `src/data/ponyo.ts`.
-- Social preview: `public/social-card.png`; favicon: `public/icon.svg`.
+- Logo and SVG favicon: `public/logo.svg`, shared by the header and homepage through `src/components/Logo.astro`. The orbit uses curved mesh lines and a sea-green ring. The matching home-screen icon is `public/icons/apple-touch-icon.png`.
+- Social preview: `public/social-card.png`.
 
 ## Artwork credit
 

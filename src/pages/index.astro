@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Logo from "@/components/Logo.astro";
 import OceanStill from "@/components/OceanStill.astro";
 import WorkCard from "@/components/WorkCard.astro";
 import PageLayout from "@/layouts/Base.astro";
@@ -53,7 +54,10 @@ const selected = [
 >
   <div class="home-intro">
     <div class="home-identity">
-      <h1>Gabriel I. Alonso<span class="accent-dot">.</span></h1>
+      <div class="home-name">
+        <Logo class="home-symbol" />
+        <h1>Gabriel I. Alonso<span class="accent-dot">.</span></h1>
+      </div>
       <p>Environmental engineering graduate student</p>
       <p class="home-contact">
         <a href="mailto:gialonsoser@gmail.com">gialonsoser@gmail.com</a>

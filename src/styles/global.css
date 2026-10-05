@@ -92,10 +92,18 @@
   margin-bottom: 38px;
 }
 .wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--serif);
   font-size: 24px;
   letter-spacing: -0.8px;
   white-space: nowrap;
+}
+.wordmark-symbol {
+  width: 40px;
+  height: 40px;
+  flex: none;
 }
 .wordmark-dot,
 .accent-dot {
@@ -158,6 +166,19 @@
   padding: 0 0 20px;
 }
 .home-identity {
+  min-width: 0;
+}
+.home-name {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.home-symbol {
+  width: clamp(42px, 4.8vw, 64px);
+  height: auto;
+  flex: none;
+}
+.home-name h1 {
   min-width: 0;
 }
 .ocean-study {
@@ -597,6 +618,13 @@
   .wordmark {
     font-size: 22px;
   }
+  .wordmark-symbol {
+    width: 36px;
+    height: 36px;
+  }
+  .home-name {
+    gap: 10px;
+  }
   .header-cv {
     margin-left: auto;
     order: 1;
@@ -675,6 +703,15 @@
   }
 }
 @media (max-width: 600px) {
+  .home-symbol {
+    width: 32px;
+  }
+  .home-name {
+    gap: 8px;
+  }
+  .home-intro h1 {
+    font-size: clamp(26px, 5.2vw, 32px);
+  }
   .selected-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 26px 18px;
@@ -696,7 +733,10 @@
     margin: 8px 0 0;
   }
   .home-intro h1 {
-    font-size: 34px;
+    font-size: clamp(28px, 8.8vw, 34px);
+  }
+  .home-symbol {
+    width: 36px;
   }
   .selected-grid {
     gap: 24px 18px;

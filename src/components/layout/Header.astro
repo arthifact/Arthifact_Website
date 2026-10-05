@@ -1,5 +1,6 @@
 ---
 import { getEntry } from "astro:content";
+import Logo from "@/components/Logo.astro";
 import { menuLinks } from "@/site.config";
 const pathname = Astro.url.pathname;
 let activePath = pathname;
@@ -20,9 +21,12 @@ const isCurrent = (path: string) =>
 ---
 
 <header class="site-header" data-pagefind-ignore>
-  <a class="wordmark" href="/" aria-label="Gabriel I. Alonso — home"
-    >G. I. Alonso<span class="wordmark-dot" aria-hidden="true">.</span></a
-  >
+  <a class="wordmark" href="/" aria-label="Gabriel I. Alonso — home">
+    <Logo class="wordmark-symbol" />
+    <span
+      >G. I. Alonso<span class="wordmark-dot" aria-hidden="true">.</span></span
+    >
+  </a>
   <nav aria-label="Main navigation" class="main-nav">
     {
       menuLinks.map((link) => (

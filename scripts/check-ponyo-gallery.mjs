@@ -5,7 +5,11 @@ import vm from "node:vm";
 import { gzipSync } from "node:zlib";
 
 export function verifyPonyoGallery(html, root) {
-  const encoded = html.match(/data-ponyo-gallery="([^"]+)"/)?.[1];
+  const gallery = html.match(
+    /<figure\b[^>]*data-ponyo-gallery="[^"]+"[^>]*>[\s\S]*?<\/figure>/,
+  )?.[0];
+  assert(gallery, "The homepage must include the Ponyo figure.");
+  const encoded = gallery.match(/data-ponyo-gallery="([^"]+)"/)?.[1];
   assert(encoded, "The homepage must include the local Ponyo gallery.");
   const json = encoded.replaceAll("&quot;", '"').replaceAll("&amp;", "&");
   const frames = JSON.parse(json);
@@ -31,7 +35,7 @@ export function verifyPonyoGallery(html, root) {
       );
     }
   }
-  const script = html.match(
+  const script = gallery.match(
     /<script\b[^>]*data-ponyo-randomizer[^>]*>([\s\S]*?)<\/script>/,
   )?.[1];
   assert(script, "The homepage must choose a still on each load.");
@@ -41,15 +45,13 @@ export function verifyPonyoGallery(html, root) {
     "The inline image chooser exceeds its 1.2 KiB gzip budget.",
   );
   const fallback = frames.find((frame) => frame.id === "050");
-  const noScript = html.match(/<noscript>([\s\S]*?)<\/noscript>/)?.[1];
+  const noScript = gallery.match(/<noscript>([\s\S]*?)<\/noscript>/)?.[1];
   assert(
     noScript?.includes(fallback.src),
     "The underwater still must work with JavaScript disabled.",
   );
   assert(
-    !/<img\b/.test(
-      html.replace(/<noscript>[\s\S]*?<\/noscript>/g, "").split("</figure>")[0],
-    ),
+    !/<img\b/.test(gallery.replace(/<noscript>[\s\S]*?<\/noscript>/g, "")),
     "An unselected still must not be requested before the image chooser runs.",
   );
 
