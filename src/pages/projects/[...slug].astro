@@ -3,19 +3,21 @@ import { getCollection, render } from "astro:content";
 import BlogPost from "../../layouts/BlogPost.astro";
 
 export async function getStaticPaths() {
-	const projects = await getCollection("project");
-	return projects
-		.filter((project) => typeof project.id === "string" && project.id.length > 0)
-		.map((project) => ({
-			params: { slug: project.id },
-			props: { project },
-		}));
+  const projects = await getCollection("project");
+  return projects
+    .filter(
+      (project) => typeof project.id === "string" && project.id.length > 0,
+    )
+    .map((project) => ({
+      params: { slug: project.id },
+      props: { project },
+    }));
 }
 
 const { project } = Astro.props;
 const { Content } = await render(project);
 ---
 
-<BlogPost post={project as any}>
-	<Content />
+<BlogPost post={project}>
+  <Content />
 </BlogPost>

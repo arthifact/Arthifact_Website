@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+import PageIntro from "@/components/PageIntro.astro";
+import WorkCard from "@/components/WorkCard.astro";
+import PageLayout from "@/layouts/Base.astro";
+const research = (
+  await getCollection("project", ({ data }) => data.kind === "research")
+).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+
+<PageLayout
+  meta={{
+    title: "Research",
+    description:
+      "Research interests and writing by Gabriel I. Alonso, spanning geometry, the environment, and art.",
+  }}
+>
+  <PageIntro
+    number="01"
+    title="Research"
+    description="I’m interested in geometry, the environment, and art. I like understanding how things work and using what I learn in practical projects. My research interests include geometry processing, differentiable representations, simulation, and computer graphics."
+  />
+  <section class="research-list" aria-label="Research work">
+    {
+      research.map((project, index) => (
+        <WorkCard project={project} index={index} imageFit="contain" />
+      ))
+    }
+  </section>
+</PageLayout>

@@ -1,0 +1,39 @@
+---
+import { getCollection } from "astro:content";
+import PageIntro from "@/components/PageIntro.astro";
+import WorkCard from "@/components/WorkCard.astro";
+import PageLayout from "@/layouts/Base.astro";
+const projects = (
+  await getCollection("project", ({ data }) => data.kind === "art")
+).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+
+<PageLayout
+  meta={{
+    title: "Art",
+    description:
+      "3D art and animation by Gabriel I. Alonso, also known as Arthifact.",
+  }}
+>
+  <PageIntro
+    number="03"
+    title="Art"
+    description="Stories told through form, color, and motion. A collection of 3D animation and visual experiments."
+  />
+  <div class="index-topline mono">
+    <span>Selected visual work</span><a
+      href="https://www.youtube.com/@arthifact">Motion on YouTube ↗</a>
+  </div>
+  <div class="work-grid art-grid">
+    {
+      projects.map((project, index) => (
+        <WorkCard project={project} index={index} />
+      ))
+    }
+  </div>
+  <div class="simple-note">
+    <p>More sketches and works in progress</p><a
+      class="text-link mono"
+      href="https://www.instagram.com/arthifact_/">Instagram ↗</a>
+  </div>
+</PageLayout>

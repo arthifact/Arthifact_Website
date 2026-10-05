@@ -1,110 +1,73 @@
-# Arthifact Website (astro-cactus)
+# Gabriel I. Alonso — portfolio
 
-Personal/portfolio website built with Astro and Tailwind CSS. This repository contains content (posts, notes, projects) and the site code used to build and deploy a static site.
+A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, and a compact homepage with six selected works and a Ponyo still selected randomly on each homepage load. Navigation stays at the top. Selected work keeps the same card layout and 16:9 image frames at every size: three columns above 600px and two on smaller screens.
 
-## Tech stack
+## Run and verify
 
-- Astro (static site generator)
-- Tailwind CSS
-- Pagefind for on-site search
-- npm for package management (used by CI)
-- TypeScript
+Use Node 22.18 or newer and npm. The committed lockfile is the source of truth.
 
-## Quick start
-
-Prerequisites:
-
-- Node.js (LTS recommended)
-
-
-This project uses npm (the GitHub Actions CI uses npm). Use the npm commands below to run and build the site locally so behavior matches CI.
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run locally in development mode:
-
-```bash
+```sh
+npm ci
 npm run dev
-```
-
-Build for production:
-
-```bash
+npm run check
 npm run build
-```
-
-
-Notes: the `postbuild` script runs Pagefind to generate the search index for the built site. After `npm run build`, run the postbuild step to generate the search index:
-
-```bash
-# after `npm run build`
-npm run postbuild
-```
-
-Preview the production build locally:
-
-```bash
+npm run verify:site
 npm run preview
 ```
 
-Available scripts (from `package.json`):
+`npm run build` also builds the Pagefind index and verifies the generated site. The homepage uses one small inline script to choose a Ponyo still; navigation and content also work with JavaScript disabled. The other core pages ship no client JavaScript. All pages use system fonts; there are no external font requests or video players on initial load. The interactive Earth model loads its third-party viewer only after the reader requests it.
 
-- `dev` / `start` — start Astro in dev mode
-- `build` — build the site for production
-- `postbuild` — generate Pagefind search index (`pagefind --site dist`)
-- `preview` — preview the production build
-- `lint` — run Biome linter
-- `format` — format code (runs code and imports formatting)
-- `check` — run Astro checks
+The verification command checks every built page for broken local links and anchors, image dimensions, a main heading, the CV, RSS content, and a 24 KiB gzipped HTML budget for the core pages. Gallery checks also exercise all 50 choices, repeat avoidance, unavailable session storage, and fallback behavior. GitHub Actions runs type checks, the production build, and verification on pull requests.
 
-Note about CI package manager
+## Add and organize work
 
-The repository's GitHub Actions workflow (`.github/workflows/ci.yml`) currently uses npm to install and build the project. For best parity with CI, consider using the same package manager locally (npm) when testing CI-related issues. The README above already lists the npm equivalents for all important commands.
+Existing project URLs stay under `/projects/<slug>/`, including entries shown in Research or Art. Each item has its own Markdown folder in `src/content/projects/` and a local cover image.
 
-## Project structure (important parts)
+```yaml
+---
+title: "Your project title"
+description: "A concise description of the work."
+kind: project # research | project | art
+featured: false
+publishDate: "2026-10-05"
+coverImage:
+  src: "./cover.png"
+  alt: "Describe what the image shows."
+---
+```
 
-- `src/` — site source code
-  - `components/` — reusable UI components
-  - `content/` — markdown content (posts, projects, notes)
-  - `layouts/` — page layouts
-  - `pages/` — route pages
-  - `styles/` — global styles and Tailwind integration
-  - `plugins/` — remark/rehype plugins
-- `public/` — static assets
-- `package.json` — scripts & dependencies
-- `astro.config.ts`, `tailwind.config.ts`, `tsconfig.json`
+- `kind` places the item in Research, Projects, or Art.
+- `featured: true` puts an item first in the project index.
+- Edit the `selected` entries in `src/pages/index.astro` to change the six homepage selections and their short display titles and descriptions. Astro normalizes IDs: the DMesh++ folder becomes `article-exploring-dmesh`.
+- Keep covers local. Astro produces responsive WebP images automatically.
+- Link to demonstrations and videos from the Markdown. Repository directives such as `::github{repo="arthifact/example"}` render static links.
+
+## Write
+
+Add Markdown posts in `src/content/post/` with `title`, `description`, and `publishDate`; optional fields include `tags`, `coverImage`, and `draft`. Notes live in `src/content/note/`. The Blog and main RSS feed collect published posts, research essays, and notes. A post marked `unlisted: true` keeps its URL but stays out of the blog and feed and receives `noindex` metadata. The original Markdown demo is preserved this way.
+
+Research writeups, projects, art, posts, and notes share one paper layout: a centered 720px reading column, serif type, title, author, date, summary, and text. There is no contents sidebar or automatic cover banner. Covers remain thumbnails on index pages; insert article figures in the Markdown where they belong. Normal headings, lists, links, tables, and footnotes work. Print styles remove navigation and use a white background.
+
+Start from `examples/paper.md`, which is outside the published content folders. Copy it into `src/content/post/<slug>/index.md`, set the title, summary, and date, and write the body. Remove `unlisted: true` when you want it in the blog and RSS. For a project, put it in `src/content/projects/<slug>/index.md` with `kind: research`, `project`, or `art` instead. Authors default to Gabriel I. Alonso; add an `authors` array for coauthors.
+
+LaTeX equations work in both `.md` and `.mdx`: use `$x^2$` inline or `$$` on separate lines around a display equation. KaTeX renders the equations to HTML and MathML during the build, so the reader needs no math JavaScript. Math styles and fonts are served locally and linked only on articles containing equations, with font swapping enabled. Wide display equations scroll within the reading column and can be focused with the keyboard. Unsupported or invalid equations fail the build; use [KaTeX’s supported commands](https://katex.org/docs/supported). This is a web writing format with LaTeX math, not a compiler for entire `.tex` documents.
+
+## Update identity and design
+
+- Name, description, domain, and navigation: `src/site.config.ts`.
+- Homepage role and email: `src/pages/index.astro`.
+- Biography and contact links: `src/pages/about.astro`.
+- CV: replace `public/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf` when needed.
+- Typography, spacing, mobile layout, and print styles: `src/styles/global.css`.
+- Sea artwork: `src/components/OceanStill.astro` and `src/assets/ponyo/`. All 50 stills are local, optimized WebP files. A small inline script picks one per homepage load, avoiding the previous frame in the same tab when session storage is available. Only the chosen image is requested; frame 050 is the no-JavaScript and image-error fallback. Image descriptions live in `src/data/ponyo.ts`.
+- Social preview: `public/social-card.png`; favicon: `public/icon.svg`.
+
+## Artwork credit
+
+The 50 homepage stills are from [Ponyo (2008), Studio Ghibli’s official gallery](https://www.ghibli.jp/works/ponyo/). © 2008 Hayao Miyazaki/Studio Ghibli, NDHDMT. The gallery provides stills for use within the bounds of common sense. This third-party artwork remains under its original copyright and is not covered by the repository’s software license.
 
 ## Deployment
 
-This repository is configured to deploy to **GitHub Pages** using GitHub Actions. If you fork or copy this repository, it should be ready to deploy automatically.
+GitHub Pages deploys pushes to `main` through `.github/workflows/deploy.yml`. The custom domain and `CNAME` remain configured. Review a redesign pull request before merging; merging publishes the changes through the existing workflow.
 
-**GitHub Actions workflows:**
-- `.github/workflows/deploy.yml` — deploys to GitHub Pages on push to `main`
-- `.github/workflows/ci.yml` — runs linting and build checks on PRs and pushes
-
-**Setup instructions:**
-
-1. Fork or copy this repository to your GitHub account.
-2. Go to your repository's **Settings → Pages**.
-3. Set the source to **"GitHub Actions"** (not a branch).
-4. Push to the `main` branch to trigger the deployment.
-
-**Custom domain:**
-
-This repository uses a custom domain from Namecheap. If you want to use your own custom domain:
-- Add a `CNAME` file with your domain (already present in this repo).
-- Configure DNS settings with your domain provider.
-
-If you don't have a custom domain, GitHub Pages will serve your site at:
-- `https://username.github.io/repository-name/` (if the repo is not named `username.github.io`)
-- `https://username.github.io/` (if the repo is named `username.github.io`)
-
-You may need to update the `site` config in `astro.config.ts` for deploying properly.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Built from the Astro Cactus foundation. See [LICENSE](LICENSE).

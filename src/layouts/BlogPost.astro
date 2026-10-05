@@ -1,78 +1,102 @@
 ---
-import { type CollectionEntry, render } from "astro:content";
-
-import Masthead from "@/components/blog/Masthead.astro";
-import TOC from "@/components/blog/TOC.astro";
-
+import type { CollectionEntry } from "astro:content";
+import mathStyles from "@/styles/math.css?url";
 import BaseLayout from "./Base.astro";
-
 interface Props {
-	post: CollectionEntry<"post">;
+  post:
+    | CollectionEntry<"post">
+    | CollectionEntry<"project">
+    | CollectionEntry<"note">;
 }
-
 const { post } = Astro.props;
-const { ogImage, title, description, updatedDate, publishDate } = post.data;
-const socialImage = ogImage; // Use custom OG image from frontmatter only
-const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString();
-const { headings, remarkPluginFrontmatter } = await render(post);
-const readingTime: string = remarkPluginFrontmatter.readingTime;
+// The Markdown loader can log a rendering error and retain an entry without HTML.
+if (post.filePath?.endsWith(".md") && !post.rendered) {
+  throw new Error(
+    `Could not render ${post.collection}/${post.id}. Fix Markdown or LaTeX errors before building.`,
+  );
+}
+const { title, description, publishDate, authors } = post.data;
+const updatedDate =
+  "updatedDate" in post.data ? post.data.updatedDate : undefined;
+const ogImage = "ogImage" in post.data ? post.data.ogImage : undefined;
+const kind = "kind" in post.data ? post.data.kind : "blog";
+const backLink =
+  kind === "research"
+    ? "/research/"
+    : kind === "art"
+      ? "/art/"
+      : kind === "project"
+        ? "/projects/"
+        : "/blog/";
+const backLabel =
+  kind === "research"
+    ? "Research"
+    : kind === "art"
+      ? "Art"
+      : kind === "project"
+        ? "Projects"
+        : "Blog";
+const articleDate = publishDate.toISOString();
+const content = await Astro.slots.render("default");
+const hasMath = /class="[^"]*\bkatex\b/.test(content);
 ---
 
 <BaseLayout
-	meta={{
-		articleDate,
-		description,
-		ogImage: socialImage,
-		title,
-	}}
+  meta={{
+    articleDate,
+    description: description ?? "",
+    ogImage,
+    title,
+    noindex: "unlisted" in post.data && post.data.unlisted,
+  }}
 >
-	<article class="grow break-words" data-pagefind-body>
-		<div id="blog-hero" class="mb-12"><Masthead content={post} readingTime={readingTime} /></div>
-		<div class="flex flex-col gap-10 lg:flex-row lg:items-start">
-			{!!headings.length && <TOC headings={headings} />}
-			<div
-				class="prose prose-sm prose-headings:font-semibold prose-headings:text-accent-2 prose-headings:before:absolute prose-headings:before:-ms-4 prose-headings:before:text-gray-600 prose-headings:hover:before:text-accent sm:prose-headings:before:content-['#'] sm:prose-th:before:content-none"
-			>
-				<slot />
-			</div>
-		</div>
-	</article>
-	<button
-		class="hover:border-link fixed end-4 bottom-8 z-90 flex h-10 w-10 translate-y-28 cursor-pointer items-center justify-center rounded-full border-2 border-transparent bg-zinc-200 text-3xl opacity-0 transition-all transition-discrete duration-300 data-[show=true]:translate-y-0 data-[show=true]:opacity-100 sm:end-8 sm:h-12 sm:w-12 dark:bg-zinc-700"
-		data-show="false"
-		id="to-top-btn"
-	>
-		<span class="sr-only">Back to top</span>
-		<svg
-			aria-hidden="true"
-			class="h-6 w-6"
-			fill="none"
-			focusable="false"
-			stroke="currentColor"
-			stroke-width="2"
-			viewBox="0 0 24 24"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<path d="M4.5 15.75l7.5-7.5 7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
-		</svg>
-	</button>
+  <Fragment slot="head">
+    {hasMath && <link rel="stylesheet" href={mathStyles} data-math-styles />}
+  </Fragment>
+  <article
+    class="paper"
+    data-pagefind-body={!("unlisted" in post.data && post.data.unlisted) ||
+      undefined}
+  >
+    <div class="article-topline mono">
+      <a href={backLink}>← {backLabel}</a>
+    </div>
+    <header class="article-heading">
+      <h1>{title}</h1>
+      <p class="article-byline">
+        <span>{authors.join(" · ")}</span><span aria-hidden="true">
+          ·
+        </span><time datetime={articleDate}
+          >{
+            publishDate.toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+              timeZone: "UTC",
+            })
+          }</time
+        >
+      </p>{description && <p class="article-description">{description}</p>}{
+        updatedDate && (
+          <p class="eyebrow">
+            Updated{" "}
+            <time datetime={updatedDate.toISOString()}>
+              {updatedDate.toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+                timeZone: "UTC",
+              })}
+            </time>
+          </p>
+        )
+      }
+    </header>
+    <div class="prose article-prose" set:html={content} />
+  </article>
+  <div class="article-bottom mono">
+    <a href={backLink}>← Back to {backLabel.toLowerCase()}</a><a href="#main"
+      >Back to top ↑</a
+    >
+  </div>
 </BaseLayout>
-
-<script>
-	const scrollBtn = document.getElementById("to-top-btn") as HTMLButtonElement;
-	const targetHeader = document.getElementById("blog-hero") as HTMLDivElement;
-
-	function callback(entries: IntersectionObserverEntry[]) {
-		entries.forEach((entry) => {
-			// only show the scroll to top button when the heading is out of view
-			scrollBtn.dataset.show = (!entry.isIntersecting).toString();
-		});
-	}
-
-	scrollBtn.addEventListener("click", () => {
-		document.documentElement.scrollTo({ behavior: "smooth", top: 0 });
-	});
-
-	const observer = new IntersectionObserver(callback);
-	observer.observe(targetHeader);
-</script>

@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+interface Props {
+  project: CollectionEntry<"project">;
+  index?: number;
+  title?: string;
+  description?: string;
+  loading?: "eager" | "lazy";
+  priority?: boolean;
+  imageSizes?: string;
+  imageFit?: "cover" | "contain";
+  headingLevel?: 2 | 3;
+}
+const {
+  project,
+  index,
+  title = project.data.title,
+  description = project.data.description,
+  loading = "lazy",
+  priority = false,
+  imageSizes = "(max-width: 470px) 100vw, (max-width: 760px) 50vw, 33vw",
+  imageFit = "cover",
+  headingLevel = 2,
+} = Astro.props;
+const { coverImage, kind, publishDate } = project.data;
+const Heading = headingLevel === 2 ? "h2" : "h3";
+---
+
+<article class="work-card">
+  <a
+    class:list={[
+      "work-image",
+      { "work-image-contain": imageFit === "contain" },
+    ]}
+    href={`/projects/${project.id}/`}
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    {
+      coverImage && (
+        <Image
+          src={coverImage.src}
+          alt=""
+          widths={[240, 400, 640, 960]}
+          sizes={imageSizes}
+          width={640}
+          height={360}
+          format="webp"
+          quality={78}
+          fit={imageFit}
+          loading={loading}
+          fetchpriority={priority ? "high" : "auto"}
+        />
+      )
+    }
+  </a>
+  <div class="work-copy">
+    <p class="eyebrow">
+      <span
+        >{
+          index !== undefined ? `${String(index + 1).padStart(2, "0")} / ` : ""
+        }{
+          kind === "research"
+            ? "Research essay"
+            : kind === "art"
+              ? "Art & animation"
+              : "Project"
+        }</span
+      ><time datetime={publishDate.toISOString()}
+        >{publishDate.getUTCFullYear()}</time
+      >
+    </p>
+    <Heading class="work-title">
+      <a href={`/projects/${project.id}/`}
+        >{title}<span aria-hidden="true" class="title-arrow">↗</span></a
+      >
+    </Heading>
+    <p class="work-description">{description}</p>
+  </div>
+</article>

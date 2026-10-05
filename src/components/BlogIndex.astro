@@ -1,0 +1,77 @@
+---
+import { getCollection } from "astro:content";
+import { getAllPosts } from "@/data/post";
+import PageIntro from "@/components/PageIntro.astro";
+const posts = (await getAllPosts()).sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
+);
+const essays = (
+  await getCollection("project", ({ data }) => data.kind === "research")
+).sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+const notes = (await getCollection("note")).sort(
+  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime(),
+);
+const entries = [
+  ...posts.map((p) => ({
+    title: p.data.title,
+    description: p.data.description,
+    date: p.data.publishDate,
+    kind: "Blog",
+    href: `/posts/${p.id}/`,
+  })),
+  ...essays.map((p) => ({
+    title: p.data.title,
+    description: p.data.description,
+    date: p.data.publishDate,
+    kind: "Research essay",
+    href: `/projects/${p.id}/`,
+  })),
+  ...notes.map((p) => ({
+    title: p.data.title,
+    description: p.data.description,
+    date: p.data.publishDate,
+    kind: "Note",
+    href: `/notes/${p.id}/`,
+  })),
+].sort((a, b) => b.date.getTime() - a.date.getTime());
+---
+
+<PageIntro
+  number="04"
+  title="Blog"
+  description="Essays and working notes on geometry, computation, and the things I learn along the way."
+/>
+<div class="index-topline mono">
+  <span>Essays & notes</span><a href="/rss.xml">Follow via RSS ↗</a>
+</div>
+<div class="writing-list">
+  {
+    entries.map((entry) => (
+      <article class="writing-row">
+        <>
+          <p class="eyebrow">
+            {entry.kind}
+            <br />
+            <time datetime={entry.date.toISOString()}>
+              {entry.date.toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                timeZone: "UTC",
+              })}
+            </time>
+          </p>
+          <div>
+            <h2>
+              <a href={entry.href}>{entry.title}</a>
+            </h2>
+            {entry.description && <p>{entry.description}</p>}
+          </div>
+          <span class="row-arrow" aria-hidden="true">
+            ↗
+          </span>
+        </>
+      </article>
+    ))
+  }
+</div>
