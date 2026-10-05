@@ -4,14 +4,32 @@ import type { CollectionEntry } from "astro:content";
 interface Props {
   project: CollectionEntry<"project">;
   index?: number;
+  title?: string;
+  description?: string;
+  loading?: "eager" | "lazy";
+  priority?: boolean;
+  imageSizes?: string;
+  imageFit?: "cover" | "contain";
 }
-const { project, index } = Astro.props;
-const { title, description, coverImage, kind, publishDate } = project.data;
+const {
+  project,
+  index,
+  title = project.data.title,
+  description = project.data.description,
+  loading = "lazy",
+  priority = false,
+  imageSizes = "(max-width: 470px) 100vw, (max-width: 760px) 50vw, 33vw",
+  imageFit = "cover",
+} = Astro.props;
+const { coverImage, kind, publishDate } = project.data;
 ---
 
 <article class="work-card">
   <a
-    class="work-image"
+    class:list={[
+      "work-image",
+      { "work-image-contain": imageFit === "contain" },
+    ]}
     href={`/projects/${project.id}/`}
     tabindex="-1"
     aria-hidden="true"
@@ -21,13 +39,15 @@ const { title, description, coverImage, kind, publishDate } = project.data;
         <Image
           src={coverImage.src}
           alt=""
-          widths={[400, 640, 960]}
-          sizes="(max-width: 700px) 100vw, 33vw"
+          widths={[240, 400, 640, 960]}
+          sizes={imageSizes}
           width={640}
           height={360}
           format="webp"
           quality={78}
-          loading="lazy"
+          fit={imageFit}
+          loading={loading}
+          fetchpriority={priority ? "high" : "auto"}
         />
       )
     }
@@ -45,11 +65,13 @@ const { title, description, coverImage, kind, publishDate } = project.data;
               : "Project"
         }</span
       ><time datetime={publishDate.toISOString()}
-        >{publishDate.getUTCFullYear()}</time>
+        >{publishDate.getUTCFullYear()}</time
+      >
     </p>
     <h3>
       <a href={`/projects/${project.id}/`}
-        >{title}<span aria-hidden="true" class="title-arrow">↗</span></a>
+        >{title}<span aria-hidden="true" class="title-arrow">↗</span></a
+      >
     </h3>
     <p class="work-description">{description}</p>
   </div>

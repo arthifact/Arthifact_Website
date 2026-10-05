@@ -7,6 +7,7 @@ import { siteConfig } from "@/site.config";
 import type { SiteMeta } from "@/types";
 interface Props {
   meta: SiteMeta;
+  showFooter?: boolean;
 }
 const {
   meta: {
@@ -16,6 +17,7 @@ const {
     title,
     noindex,
   },
+  showFooter = true,
 } = Astro.props;
 ---
 
@@ -31,7 +33,9 @@ const {
   >
   <body
     ><SkipLink /><div class="site-shell">
-      <Header /><main id="main" tabindex="-1"><slot /></main><Footer />
+      <Header /><main id="main" tabindex="-1"><slot /></main>{
+        showFooter && <Footer />
+      }
     </div></body
   >
 </html>

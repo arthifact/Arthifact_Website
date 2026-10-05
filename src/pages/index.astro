@@ -1,100 +1,53 @@
 ---
 import { getCollection } from "astro:content";
-import GeometryFigure from "@/components/GeometryFigure.astro";
 import WorkCard from "@/components/WorkCard.astro";
 import PageLayout from "@/layouts/Base.astro";
+
 const projects = await getCollection("project");
 const selected = [
-  "article-exploring-dmesh",
-  "cielo-g-framework",
-  "lego-utep-dino-animation",
-]
-  .map((id) => projects.find((p) => p.id === id))
-  .filter((p) => p !== undefined);
+  {
+    id: "article-exploring-dmesh",
+    title: "DMesh++",
+    description: "Differentiable meshing.",
+  },
+  {
+    id: "cielo-g-framework",
+    title: "CIELO-G",
+    description: "Learning framework for Godot.",
+  },
+  {
+    id: "lego-utep-dino-animation",
+    title: "LEGO animation",
+    description: "UTEP · Blender.",
+  },
+].map(({ id, ...copy }) => {
+  const project = projects.find((entry) => entry.id === id);
+  if (!project) throw new Error(`Selected work is missing: ${id}`);
+  return { project, ...copy };
+});
 ---
 
-<PageLayout meta={{ title: "Geometry, computation & art" }}>
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-name-panel">
-      <p class="eyebrow hero-label">
-        <span class="tiny-dot" aria-hidden="true"></span>Research / making /
-        exploring
-      </p>
-      <div class="hero-name">
-        <p class="hero-kicker">A portfolio of</p><h1 id="hero-title">
-          Gabriel I.<br />Alonso<span class="accent-dot">.</span>
-        </h1><p class="hero-subtitle">
-          At the intersection of geometry,<br />computation, and visual
-          expression.
-        </p>
-      </div>
-      <a class="text-link mono" href="/about/"
-        >About me <span aria-hidden="true">↗</span></a
-      >
-    </div>
-    <GeometryFigure />
-    <div class="hero-right">
-      <div class="hero-focus">
-        <p class="eyebrow">Research direction</p><h2>
-          Thinking<br />through<br /><em>geometry.</em>
-        </h2><p>
-          Geometry processing.<br />Differentiable representations.<br
-          />Simulation & computer graphics.
-        </p><a href="/research/" class="text-link mono"
-          >Explore research <span aria-hidden="true">↗</span></a>
-      </div>
-      <nav class="hero-index" aria-label="Portfolio sections">
-        <a href="/projects/"
-          ><span class="mono">02</span><span>Projects</span><span
-            aria-hidden="true">↗</span
-          ></a
-        >
-        <a href="/art/"
-          ><span class="mono">03</span><span>Art</span><span aria-hidden="true"
-            >↗</span
-          ></a
-        >
-        <a href="/blog/"
-          ><span class="mono">04</span><span>Blog</span><span aria-hidden="true"
-            >↗</span
-          ></a
-        >
-      </nav>
-    </div>
-  </section>
-  <div class="hero-caption mono">
-    <span>Selected work & ongoing interests</span><span
-      >Gabriel I. Alonso / Arthifact</span>
+<PageLayout meta={{ title: "Geometry processing" }} showFooter={false}>
+  <div class="home-intro">
+    <h1>Gabriel I. Alonso<span class="accent-dot">.</span></h1>
+    <p>Geometry processing</p>
   </div>
   <section class="selected-section" aria-labelledby="selected-title">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">A few things I’ve been making</p><h2
-          id="selected-title"
-        >
-          Selected work
-        </h2>
-      </div><a href="/projects/" class="text-link mono"
-        >Browse projects <span aria-hidden="true">↗</span></a>
-    </div>
+    <h2 id="selected-title" class="eyebrow">Selected work</h2>
     <div class="selected-grid">
       {
-        selected.map((project, index) => (
-          <WorkCard project={project} index={index} />
+        selected.map(({ project, title, description }, index) => (
+          <WorkCard
+            project={project}
+            title={title}
+            description={description}
+            loading="eager"
+            priority={index === 0}
+            imageFit={project.data.kind === "art" ? "cover" : "contain"}
+            imageSizes="(max-width: 500px) 28vw, (max-width: 760px) 140px, (max-width: 1336px) 30vw, 395px"
+          />
         ))
       }
     </div>
-  </section>
-  <section class="home-about" aria-labelledby="home-about-title">
-    <p class="eyebrow">Beyond the surface</p><div>
-      <h2 id="home-about-title">
-        A curiosity for shape.<br /><em>A love of making things.</em>
-      </h2><p>
-        My work brings together geometric ideas, interactive systems, and 3D
-        art. Here you’ll find research writing, open-source tools, and
-        experiments in motion and form.
-      </p><a href="/about/" class="text-link mono"
-        >More about me <span aria-hidden="true">↗</span></a>
-    </div><div class="home-about-mark" aria-hidden="true">∂</div>
   </section>
 </PageLayout>

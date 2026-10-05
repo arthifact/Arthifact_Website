@@ -1,6 +1,6 @@
 # Gabriel I. Alonso — portfolio
 
-A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, quiet sage panels, and a triangulated surface generated at build time.
+A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, and a compact homepage with three selected works. Navigation stays at the top; on phones the works become short rows with thumbnails.
 
 ## Run and verify
 
@@ -38,7 +38,7 @@ coverImage:
 
 - `kind` places the item in Research, Projects, or Art.
 - `featured: true` puts an item first in the project index.
-- Edit the `selected` IDs in `src/pages/index.astro` to change the three homepage selections. Astro normalizes IDs: the DMesh++ folder becomes `article-exploring-dmesh`.
+- Edit the `selected` entries in `src/pages/index.astro` to change the three homepage selections and their short display titles and descriptions. Astro normalizes IDs: the DMesh++ folder becomes `article-exploring-dmesh`.
 - Keep covers local. Astro produces responsive WebP images automatically.
 - Link to demonstrations and videos from the Markdown. Repository directives such as `::github{repo="arthifact/example"}` render static links.
 
