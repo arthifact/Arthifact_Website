@@ -205,6 +205,14 @@
   font-family: var(--sans);
   font-size: 14px;
 }
+.home-intro .home-contact {
+  margin-top: 6px;
+  font-size: 12px;
+}
+.home-contact a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .selected-section {
   padding-bottom: 60px;
 }

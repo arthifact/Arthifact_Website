@@ -49,6 +49,7 @@ Add Markdown posts in `src/content/post/` with `title`, `description`, and `publ
 ## Update identity and design
 
 - Name, description, domain, and navigation: `src/site.config.ts`.
+- Homepage role and email: `src/pages/index.astro`.
 - Biography and contact links: `src/pages/about.astro`.
 - CV: replace `public/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf` when needed.
 - Typography, spacing, mobile layout, and print styles: `src/styles/global.css`.

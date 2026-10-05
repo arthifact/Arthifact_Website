@@ -43,11 +43,21 @@ const selected = [
 });
 ---
 
-<PageLayout meta={{ title: "Geometry processing" }} showFooter={false}>
+<PageLayout
+  meta={{
+    title: "Portfolio",
+    description:
+      "Gabriel I. Alonso — environmental engineering graduate student. Research, projects, art, and writing.",
+  }}
+  showFooter={false}
+>
   <div class="home-intro">
     <div class="home-identity">
       <h1>Gabriel I. Alonso<span class="accent-dot">.</span></h1>
-      <p>Geometry processing</p>
+      <p>Environmental engineering graduate student</p>
+      <p class="home-contact">
+        <a href="mailto:gialonsoser@gmail.com">gialonsoser@gmail.com</a>
+      </p>
     </div>
     <OceanStill />
   </div>
