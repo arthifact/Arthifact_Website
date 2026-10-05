@@ -311,13 +311,6 @@
   border-top: 1px solid var(--line);
   font-size: 14px;
 }
-.footer-note {
-  display: block;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 9px;
-  margin-top: 7px;
-}
 .footer-links {
   display: flex;
   align-items: center;
