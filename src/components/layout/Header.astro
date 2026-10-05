@@ -23,9 +23,11 @@ const isCurrent = (path: string) =>
 <header class="site-header" data-pagefind-ignore>
   <a class="wordmark" href="/" aria-label="Gabriel I. Alonso — home">
     <Logo class="wordmark-symbol" />
-    <span
-      >G. I. Alonso<span class="wordmark-dot" aria-hidden="true">.</span></span
-    >
+    {
+      pathname !== "/" && (
+        <span>G. I. Alonso<span class="wordmark-dot" aria-hidden="true">.</span></span>
+      )
+    }
   </a>
   <nav aria-label="Main navigation" class="main-nav">
     {

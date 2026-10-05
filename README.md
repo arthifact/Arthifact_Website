@@ -60,7 +60,7 @@ LaTeX equations work in both `.md` and `.mdx`: use `$x^2$` inline or `$$` on sep
 - CV: replace `public/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf` when needed.
 - Typography, spacing, mobile layout, and print styles: `src/styles/global.css`.
 - Sea artwork: `src/components/OceanStill.astro` and `src/assets/ponyo/`. All 50 stills are local, optimized WebP files. A small inline script picks one per homepage load, avoiding the previous frame in the same tab when session storage is available. Only the chosen image is requested; frame 050 is the no-JavaScript and image-error fallback. Image descriptions live in `src/data/ponyo.ts`.
-- Torus logo and SVG favicon: `public/logo.svg`, shared by the header and homepage through `src/components/Logo.astro`. Regenerate the projected torus mesh and matching `public/icons/apple-touch-icon.png` with `node scripts/generate-logo.mjs`.
+- Torus logo and SVG favicon: `public/logo.svg`, used in the header through `src/components/Logo.astro`. The homepage header shows only the logo; the full name appears once in the introduction. Other pages retain the logo and short name in the header. Regenerate the projected torus mesh and matching `public/icons/apple-touch-icon.png` with `node scripts/generate-logo.mjs`.
 - Social preview: `public/social-card.png`.
 
 ## Artwork credit
