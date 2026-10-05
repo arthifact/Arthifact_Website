@@ -1,6 +1,6 @@
 # Gabriel I. Alonso — portfolio
 
-A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, and a compact homepage with six selected works and a Ponyo still selected randomly on each homepage load. Navigation stays at the top; on phones the works become short rows with thumbnails.
+A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, and a compact homepage with six selected works and a Ponyo still selected randomly on each homepage load. Navigation stays at the top. Selected work keeps the same card layout and 16:9 image frames at every size: three columns above 600px and two on smaller screens.
 
 ## Run and verify
 

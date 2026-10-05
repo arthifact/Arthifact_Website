@@ -74,7 +74,7 @@ const selected = [
             loading={index < 3 ? "eager" : "lazy"}
             priority={index === 0}
             imageFit={index < 2 ? "contain" : "cover"}
-            imageSizes="(max-width: 500px) 28vw, (max-width: 760px) 140px, (max-width: 1336px) 30vw, 395px"
+            imageSizes="(max-width: 600px) calc(50vw - 29px), (max-width: 760px) calc(33.333vw - 27px), (max-width: 1050px) calc(33.333vw - 40px), (max-width: 1336px) calc(33.333vw - 51px), 395px"
           />
         ))
       }
