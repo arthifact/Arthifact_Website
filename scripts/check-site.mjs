@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { gzipSync } from "node:zlib";
+import { verifyPonyoGallery } from "./check-ponyo-gallery.mjs";
 
 const root = path.resolve("dist");
 assert(fs.existsSync(root), "Build the site before running verification.");
@@ -78,9 +79,14 @@ const mainPages = [
 ];
 for (const page of mainPages) {
   const html = fs.readFileSync(path.join(root, page), "utf8");
+  const scripts = html.match(/<script\b[^>]*>[\s\S]*?<\/script>/g) || [];
   check(
-    !/<script\b/.test(html),
-    `${page}: core portfolio pages must not require client scripts`,
+    page === "index.html"
+      ? scripts.length === 1 &&
+          /data-ponyo-randomizer/.test(scripts[0]) &&
+          !/\bsrc=/.test(scripts[0].split(">")[0])
+      : scripts.length === 0,
+    `${page}: only the homepage's inline still chooser may use a client script`,
   );
   check(
     !/<iframe\b/.test(html),
@@ -122,9 +128,13 @@ if (errors.length) {
   console.error(errors.join("\n"));
   process.exit(1);
 }
+const chooserKiB = verifyPonyoGallery(home, root);
 console.log(
   `Verified ${pages.length} pages: local links and anchors, image dimensions, main headings, RSS, CV, script-free navigation, and HTML budgets.`,
 );
 console.log(
-  `Homepage HTML: ${(gzipSync(home).length / 1024).toFixed(1)} KiB gzipped; no client-side JavaScript.`,
+  `Homepage HTML: ${(gzipSync(home).length / 1024).toFixed(1)} KiB gzipped; inline still chooser: ${chooserKiB.toFixed(1)} KiB gzipped.`,
+);
+console.log(
+  "Verified all 50 local stills, random selection, repeat avoidance, disabled-storage handling, and image-error/no-JavaScript fallbacks.",
 );

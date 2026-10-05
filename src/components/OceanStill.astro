@@ -1,20 +1,97 @@
 ---
-import { Image } from "astro:assets";
-import sea from "@/assets/ponyo-sea.jpg";
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+import { ponyoDescriptions } from "@/data/ponyo";
+
+const images = import.meta.glob<ImageMetadata>("/src/assets/ponyo/*.webp", {
+  eager: true,
+  import: "default",
+});
+const sizes = "(max-width: 470px) 70vw, (max-width: 900px) 40vw, 420px";
+const frames = await Promise.all(
+  Object.entries(images)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(async ([path, src]) => {
+      const id = path.split("/").pop()!.replace(".webp", "");
+      const variants = await Promise.all(
+        [360, 540, 960].map((width) =>
+          getImage({
+            src,
+            width,
+            height: Math.round((width * 519) / 960),
+            format: "webp",
+            quality: 82,
+          }),
+        ),
+      );
+      return {
+        id,
+        alt: ponyoDescriptions[id],
+        src: variants[1]!.src,
+        srcset: variants
+          .map((image, index) => `${image.src} ${[360, 540, 960][index]}w`)
+          .join(", "),
+      };
+    }),
+);
+const fallback = frames.find((frame) => frame.id === "050");
+if (frames.length !== 50 || !fallback)
+  throw new Error("The Ponyo gallery requires all 50 stills.");
 ---
 
-<figure class="ocean-study">
-  <Image
-    src={sea}
-    alt="Sunlight reaches an underwater garden in Ponyo."
-    widths={[360, 540, 960]}
-    sizes="(max-width: 470px) 78vw, (max-width: 900px) 40vw, 420px"
-    width={960}
-    height={519}
-    format="webp"
-    quality={82}
-    loading="eager"
-  />
+<figure class="ocean-study" data-ponyo-gallery={JSON.stringify(frames)}>
+  <div class="ocean-frame" data-ponyo-frame></div>
+  <script is:inline data-ponyo-randomizer>
+    (() => {
+      const figure = document.currentScript.parentElement;
+      const target = figure.querySelector("[data-ponyo-frame]");
+      const frames = JSON.parse(figure.dataset.ponyoGallery);
+      let previous;
+      try {
+        previous = sessionStorage.getItem("portfolio:ponyo-still");
+      } catch {}
+      const choices = frames.filter((frame) => frame.id !== previous);
+      const selected = choices[Math.floor(Math.random() * choices.length)];
+      const fallback = frames.find((frame) => frame.id === "050");
+      const image = document.createElement("img");
+      image.width = 960;
+      image.height = 519;
+      image.sizes = "(max-width: 470px) 70vw, (max-width: 900px) 40vw, 420px";
+      image.loading = "eager";
+      image.decoding = "async";
+      image.fetchPriority = "high";
+      const show = (frame) => {
+        image.alt = frame.alt;
+        image.dataset.ponyoStill = frame.id;
+        image.srcset = frame.srcset;
+        image.src = frame.src;
+        try {
+          sessionStorage.setItem("portfolio:ponyo-still", frame.id);
+        } catch {}
+      };
+      image.addEventListener(
+        "error",
+        () => {
+          if (image.dataset.ponyoStill !== fallback.id) show(fallback);
+        },
+        { once: true },
+      );
+      show(selected);
+      target.replaceChildren(image);
+    })();
+  </script>
+  <noscript>
+    <img
+      src={fallback.src}
+      srcset={fallback.srcset}
+      sizes={sizes}
+      alt={fallback.alt}
+      width="960"
+      height="519"
+      loading="eager"
+      decoding="async"
+    />
+  </noscript>
   <figcaption>
     <a
       href="https://www.ghibli.jp/works/ponyo/"

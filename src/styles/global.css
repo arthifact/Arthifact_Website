@@ -171,6 +171,13 @@
   width: 100%;
   height: auto;
 }
+.ocean-frame {
+  aspect-ratio: 960 / 519;
+  background: #e6eee3;
+}
+.ocean-frame:empty {
+  display: none;
+}
 .ocean-study figcaption {
   margin-top: 8px;
   color: var(--muted);

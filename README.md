@@ -1,6 +1,6 @@
 # Gabriel I. Alonso — portfolio
 
-A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, and a compact homepage with six selected works and a small Ponyo sea still. Navigation stays at the top; on phones the works become short rows with thumbnails.
+A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, and a compact homepage with six selected works and a Ponyo still selected randomly on each homepage load. Navigation stays at the top; on phones the works become short rows with thumbnails.
 
 ## Run and verify
 
@@ -15,9 +15,9 @@ npm run verify:site
 npm run preview
 ```
 
-`npm run build` also builds the Pagefind index and verifies the generated site. The core portfolio pages ship no client JavaScript and use system fonts; there are no external font requests or video players on initial load. The interactive Earth model loads its third-party viewer only after the reader requests it.
+`npm run build` also builds the Pagefind index and verifies the generated site. The homepage uses one small inline script to choose a Ponyo still; navigation and content also work with JavaScript disabled. The other core pages ship no client JavaScript. All pages use system fonts; there are no external font requests or video players on initial load. The interactive Earth model loads its third-party viewer only after the reader requests it.
 
-The verification command checks every built page for broken local links and anchors, image dimensions, a main heading, the CV, RSS content, and a 24 KiB gzipped HTML budget for the core pages. GitHub Actions runs type checks, the production build, and verification on pull requests.
+The verification command checks every built page for broken local links and anchors, image dimensions, a main heading, the CV, RSS content, and a 24 KiB gzipped HTML budget for the core pages. Gallery checks also exercise all 50 choices, repeat avoidance, unavailable session storage, and fallback behavior. GitHub Actions runs type checks, the production build, and verification on pull requests.
 
 ## Add and organize work
 
@@ -52,12 +52,12 @@ Add Markdown posts in `src/content/post/` with `title`, `description`, and `publ
 - Biography and contact links: `src/pages/about.astro`.
 - CV: replace `public/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf` when needed.
 - Typography, spacing, mobile layout, and print styles: `src/styles/global.css`.
-- Sea artwork: `src/components/OceanStill.astro` and `src/assets/ponyo-sea.jpg`. Astro optimizes the still into local responsive WebP files.
+- Sea artwork: `src/components/OceanStill.astro` and `src/assets/ponyo/`. All 50 stills are local, optimized WebP files. A small inline script picks one per homepage load, avoiding the previous frame in the same tab when session storage is available. Only the chosen image is requested; frame 050 is the no-JavaScript and image-error fallback. Image descriptions live in `src/data/ponyo.ts`.
 - Social preview: `public/social-card.png`; favicon: `public/icon.svg`.
 
 ## Artwork credit
 
-The homepage still is from [Ponyo (2008), Studio Ghibli’s official gallery](https://www.ghibli.jp/works/ponyo/), [frame 050](https://www.ghibli.jp/gallery/ponyo050.jpg). © 2008 Hayao Miyazaki/Studio Ghibli, NDHDMT. The gallery provides stills for use within the bounds of common sense. This third-party artwork remains under its original copyright and is not covered by the repository’s software license.
+The 50 homepage stills are from [Ponyo (2008), Studio Ghibli’s official gallery](https://www.ghibli.jp/works/ponyo/). © 2008 Hayao Miyazaki/Studio Ghibli, NDHDMT. The gallery provides stills for use within the bounds of common sense. This third-party artwork remains under its original copyright and is not covered by the repository’s software license.
 
 ## Deployment
 
