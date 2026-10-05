@@ -151,11 +151,43 @@
   border-color: currentColor;
 }
 .home-intro {
-  padding: 12px 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  padding: 0 0 20px;
+}
+.home-identity {
+  min-width: 0;
+}
+.ocean-study {
+  margin: 0;
+  width: 100%;
+  max-width: 420px;
+  justify-self: end;
+}
+.ocean-study img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ocean-study figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1.4;
+}
+.ocean-study figcaption a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.home-intro .accent-dot {
+  color: #648f8b;
 }
 .home-intro h1 {
   margin: 0;
-  font-size: clamp(36px, 4.5vw, 60px);
+  font-size: clamp(36px, 4.2vw, 58px);
   font-weight: 400;
   line-height: 1.15;
   letter-spacing: -2px;
@@ -196,7 +228,7 @@
 .selected-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 32px 28px;
 }
 .work-card {
   min-width: 0;
@@ -581,10 +613,12 @@
 }
 @media (max-width: 760px) {
   .home-intro {
-    padding: 4px 0 28px;
+    grid-template-columns: 1fr 0.85fr;
+    gap: 14px;
+    padding: 0 0 22px;
   }
   .home-intro h1 {
-    font-size: clamp(32px, 7vw, 46px);
+    font-size: clamp(32px, 5vw, 40px);
     letter-spacing: -1.2px;
   }
   .home-intro p {
@@ -725,6 +759,22 @@
   }
 }
 @media (max-width: 470px) {
+  .home-intro {
+    grid-template-columns: 1fr;
+    position: relative;
+    gap: 8px;
+  }
+  .ocean-study {
+    width: 72%;
+    max-width: 290px;
+    margin: 8px 0 0;
+  }
+  .home-intro h1 {
+    font-size: 34px;
+  }
+  .selected-grid {
+    gap: 20px;
+  }
   .work-grid {
     grid-template-columns: 1fr;
   }

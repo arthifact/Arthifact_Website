@@ -1,0 +1,25 @@
+---
+import { Image } from "astro:assets";
+import sea from "@/assets/ponyo-sea.jpg";
+---
+
+<figure class="ocean-study">
+  <Image
+    src={sea}
+    alt="Sunlight reaches an underwater garden in Ponyo."
+    widths={[360, 540, 960]}
+    sizes="(max-width: 470px) 78vw, (max-width: 900px) 40vw, 420px"
+    width={960}
+    height={519}
+    format="webp"
+    quality={82}
+    loading="eager"
+  />
+  <figcaption>
+    <a
+      href="https://www.ghibli.jp/works/ponyo/"
+      title="© 2008 Hayao Miyazaki/Studio Ghibli, NDHDMT"
+      >Ponyo, 2008 · © Studio Ghibli</a
+    >
+  </figcaption>
+</figure>

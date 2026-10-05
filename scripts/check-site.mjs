@@ -98,8 +98,8 @@ for (const page of mainPages) {
 }
 const home = fs.readFileSync(path.join(root, "index.html"), "utf8");
 check(
-  (home.match(/class="work-card"/g) || []).length === 3,
-  "Homepage must show research, a project, and art.",
+  (home.match(/class="work-card"/g) || []).length === 6,
+  "Homepage must show six selected works.",
 );
 check(
   home.includes("/projects/article-exploring-dmesh/"),

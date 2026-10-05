@@ -1,6 +1,6 @@
 # Gabriel I. Alonso — portfolio
 
-A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, and a compact homepage with three selected works. Navigation stays at the top; on phones the works become short rows with thumbnails.
+A static research and creative portfolio at [arthifact.com](https://arthifact.com/), built with Astro. The design uses a paper-like background, serif typography, and a compact homepage with six selected works and a small Ponyo sea still. Navigation stays at the top; on phones the works become short rows with thumbnails.
 
 ## Run and verify
 
@@ -38,7 +38,7 @@ coverImage:
 
 - `kind` places the item in Research, Projects, or Art.
 - `featured: true` puts an item first in the project index.
-- Edit the `selected` entries in `src/pages/index.astro` to change the three homepage selections and their short display titles and descriptions. Astro normalizes IDs: the DMesh++ folder becomes `article-exploring-dmesh`.
+- Edit the `selected` entries in `src/pages/index.astro` to change the six homepage selections and their short display titles and descriptions. Astro normalizes IDs: the DMesh++ folder becomes `article-exploring-dmesh`.
 - Keep covers local. Astro produces responsive WebP images automatically.
 - Link to demonstrations and videos from the Markdown. Repository directives such as `::github{repo="arthifact/example"}` render static links.
 
@@ -52,7 +52,12 @@ Add Markdown posts in `src/content/post/` with `title`, `description`, and `publ
 - Biography and contact links: `src/pages/about.astro`.
 - CV: replace `public/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf` when needed.
 - Typography, spacing, mobile layout, and print styles: `src/styles/global.css`.
+- Sea artwork: `src/components/OceanStill.astro` and `src/assets/ponyo-sea.jpg`. Astro optimizes the still into local responsive WebP files.
 - Social preview: `public/social-card.png`; favicon: `public/icon.svg`.
+
+## Artwork credit
+
+The homepage still is from [Ponyo (2008), Studio Ghibli’s official gallery](https://www.ghibli.jp/works/ponyo/), [frame 050](https://www.ghibli.jp/gallery/ponyo050.jpg). © 2008 Hayao Miyazaki/Studio Ghibli, NDHDMT. The gallery provides stills for use within the bounds of common sense. This third-party artwork remains under its original copyright and is not covered by the repository’s software license.
 
 ## Deployment
 

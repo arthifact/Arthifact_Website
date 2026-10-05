@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import OceanStill from "@/components/OceanStill.astro";
 import WorkCard from "@/components/WorkCard.astro";
 import PageLayout from "@/layouts/Base.astro";
 
@@ -20,6 +21,21 @@ const selected = [
     title: "LEGO animation",
     description: "UTEP · Blender.",
   },
+  {
+    id: "graph-explorer",
+    title: "Graph Explorer",
+    description: "Interactive functions in Unity.",
+  },
+  {
+    id: "unreal-voxel-character",
+    title: "Voxel character",
+    description: "Unreal Engine · interaction.",
+  },
+  {
+    id: "behavioral-deplasticization-animation",
+    title: "Deplasticization",
+    description: "A short film in Spline.",
+  },
 ].map(({ id, ...copy }) => {
   const project = projects.find((entry) => entry.id === id);
   if (!project) throw new Error(`Selected work is missing: ${id}`);
@@ -29,8 +45,11 @@ const selected = [
 
 <PageLayout meta={{ title: "Geometry processing" }} showFooter={false}>
   <div class="home-intro">
-    <h1>Gabriel I. Alonso<span class="accent-dot">.</span></h1>
-    <p>Geometry processing</p>
+    <div class="home-identity">
+      <h1>Gabriel I. Alonso<span class="accent-dot">.</span></h1>
+      <p>Geometry processing</p>
+    </div>
+    <OceanStill />
   </div>
   <section class="selected-section" aria-labelledby="selected-title">
     <h2 id="selected-title" class="eyebrow">Selected work</h2>
@@ -41,9 +60,9 @@ const selected = [
             project={project}
             title={title}
             description={description}
-            loading="eager"
+            loading={index < 3 ? "eager" : "lazy"}
             priority={index === 0}
-            imageFit={project.data.kind === "art" ? "cover" : "contain"}
+            imageFit={index < 2 ? "contain" : "cover"}
             imageSizes="(max-width: 500px) 28vw, (max-width: 760px) 140px, (max-width: 1336px) 30vw, 395px"
           />
         ))
