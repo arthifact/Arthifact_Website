@@ -565,6 +565,46 @@ article.paper-editorial {
     gap: 30px;
   }
 }
+@media (min-width: 700px) and (max-width: 939px) {
+  .paper .paper-page {
+    min-height: min(
+      calc(var(--paper-width) * 1.4143),
+      calc((100vw - var(--paper-gutter)) * 1.4143)
+    );
+    padding: 32px 32px 24px;
+  }
+  .paper-editorial .article-heading-split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+  .paper-editorial .article-heading h1 {
+    font-size: 32px;
+  }
+  .paper-editorial .article-abstract,
+  .paper-editorial .article-description {
+    font-size: 15px;
+  }
+  .paper-editorial .article-prose {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .paper-editorial .paper-columns {
+    column-count: 2;
+    column-gap: 32px;
+  }
+  .paper-editorial .paper-columns:has(> p:only-child) {
+    column-count: 1;
+    max-width: calc((100% - 32px) / 2);
+  }
+  .paper-editorial .paper-columns > p {
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+  .paper-editorial .figure-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 @media print {
   body:has(.paper) {
     background: #fff;
