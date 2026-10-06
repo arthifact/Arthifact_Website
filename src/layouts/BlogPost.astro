@@ -2,7 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import mathStyles from "@/styles/math.css?url";
 import paperStyles from "@/styles/paper.css?url";
-import { formatPaper } from "@/utils/paper";
+import { formatPaperPages } from "@/utils/paper";
 import BaseLayout from "./Base.astro";
 interface Props {
   post:
@@ -51,12 +51,12 @@ const backLabel =
         ? "Projects"
         : "Blog";
 const articleDate = publishDate.toISOString();
-const content = formatPaper(
+const pages = formatPaperPages(
   await Astro.slots.render("default"),
   numberedSections,
   columns,
 );
-const hasMath = /class="[^"]*\bkatex\b/.test(content);
+const hasMath = pages.some((content) => /class="[^"]*\bkatex\b/.test(content));
 ---
 
 <BaseLayout
@@ -85,71 +85,94 @@ const hasMath = /class="[^"]*\bkatex\b/.test(content);
   >
     <div class="article-topline mono">
       <a href={backLink}>← {backLabel}</a>
-      <span>{format === "paper" ? "Paper" : "Article"}</span>
+      <span
+        >{format === "paper" ? "Paper" : "Article"}{
+          pages.length > 1 && ` · ${pages.length} pages`
+        }</span
+      >
     </div>
-    <header
-      class:list={[
-        "article-heading",
-        {
-          "article-heading-split": columns === 2 && !!(abstract || description),
-        },
-      ]}
-    >
-      <div class="article-title-block">
-        <h1>{title}</h1>
-        <p class="article-byline">
-          <span>{authors.join(" · ")}</span><span aria-hidden="true">
-            ·
-          </span><time datetime={articleDate}
-            >{
-              publishDate.toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-                timeZone: "UTC",
-              })
-            }</time
-          >
-        </p>
-        {affiliation && <p class="article-affiliation">{affiliation}</p>}
-        {
-          pdf && (
-            <a class="paper-pdf" href={pdf}>
-              Download PDF ↓
-            </a>
-          )
-        }
-        {
-          updatedDate && (
-            <p class="eyebrow">
-              Updated{" "}
-              <time datetime={updatedDate.toISOString()}>
-                {updatedDate.toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                  timeZone: "UTC",
-                })}
-              </time>
-            </p>
-          )
-        }
-      </div>
+    <div class="paper-sheets">
       {
-        (abstract || description) && (
-          <div class="article-summary">
-            {abstract ? (
-              <p class="article-abstract">
-                <strong>Abstract.</strong> {abstract}
-              </p>
-            ) : (
-              <p class="article-description">{description}</p>
-            )}
-          </div>
-        )
+        pages.map((content, index) => (
+          <section
+            class="paper-page"
+            id={`paper-page-${index + 1}`}
+            aria-label={`Page ${index + 1} of ${pages.length}`}
+          >
+            <div class="paper-page-content">
+              {index === 0 ? (
+                <header
+                  class:list={[
+                    "article-heading",
+                    {
+                      "article-heading-split":
+                        columns === 2 && !!(abstract || description),
+                    },
+                  ]}
+                >
+                  <div class="article-title-block">
+                    <h1>{title}</h1>
+                    <p class="article-byline">
+                      <span>{authors.join(" · ")}</span>
+                      <span aria-hidden="true">·</span>
+                      <time datetime={articleDate}>
+                        {publishDate.toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                          timeZone: "UTC",
+                        })}
+                      </time>
+                    </p>
+                    {affiliation && (
+                      <p class="article-affiliation">{affiliation}</p>
+                    )}
+                    {pdf && (
+                      <a class="paper-pdf" href={pdf}>
+                        Download PDF ↓
+                      </a>
+                    )}
+                    {updatedDate && (
+                      <p class="eyebrow">
+                        Updated{" "}
+                        <time datetime={updatedDate.toISOString()}>
+                          {updatedDate.toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                            timeZone: "UTC",
+                          })}
+                        </time>
+                      </p>
+                    )}
+                  </div>
+                  {(abstract || description) && (
+                    <div class="article-summary">
+                      {abstract ? (
+                        <p class="article-abstract">
+                          <strong>Abstract.</strong> {abstract}
+                        </p>
+                      ) : (
+                        <p class="article-description">{description}</p>
+                      )}
+                    </div>
+                  )}
+                </header>
+              ) : (
+                <div class="paper-running" aria-hidden="true">
+                  <span>{title}</span>
+                  <span>{format === "paper" ? "Paper" : "Article"}</span>
+                </div>
+              )}
+              <div class="prose article-prose" set:html={content} />
+            </div>
+            <div class="paper-page-number" aria-hidden="true">
+              {index + 1} / {pages.length}
+            </div>
+          </section>
+        ))
       }
-    </header>
-    <div class="prose article-prose" set:html={content} />
+    </div>
   </article>
   <div class="article-bottom mono">
     <a href={backLink}>← Back to {backLabel.toLowerCase()}</a><a href="#main"

@@ -8,6 +8,7 @@ interface Props {
   caption?: string;
   number?: number;
   wide?: boolean;
+  maxWidth?: number;
   width?: number;
   height?: number;
   sizes?: string;
@@ -18,7 +19,8 @@ const {
   id,
   caption,
   number,
-  wide = false,
+  wide = true,
+  maxWidth,
   width,
   height,
   sizes,
@@ -39,6 +41,7 @@ const widths =
   id={id}
   class:list={["paper-figure", { "paper-wide": wide }]}
   aria-labelledby={`${id}-caption`}
+  style={maxWidth ? `--figure-max-width: ${maxWidth}px` : undefined}
 >
   <a
     class="figure-image"
@@ -65,8 +68,8 @@ const widths =
           sizes={
             sizes ??
             (wide
-              ? "(min-width: 1150px) 1040px, calc(100vw - 40px)"
-              : "(min-width: 1136px) 496px, (min-width: 1051px) calc((100vw - 144px) / 2), (min-width: 940px) calc((100vw - 112px) / 2), (min-width: 804px) 740px, (min-width: 761px) calc(100vw - 64px), calc(100vw - 40px)")
+              ? `(min-width: 1080px) ${maxWidth ?? 872}px, (min-width: 940px) min(${maxWidth ?? 872}px, calc(100vw - 200px)), (min-width: 761px) min(${maxWidth ?? 632}px, calc(100vw - 172px)), calc(100vw - 72px)`
+              : "(min-width: 1080px) 412px, (min-width: 940px) calc((100vw - 248px) / 2), (min-width: 761px) calc(100vw - 172px), calc(100vw - 72px)")
           }
           format="webp"
           loading="lazy"

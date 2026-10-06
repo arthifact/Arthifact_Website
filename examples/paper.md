@@ -38,6 +38,8 @@ Describe what you found. Use a Markdown table for simple results:
 
 For numbered figures, rich captions, and paired panels, start with `examples/paper.mdx` instead.
 
+<!-- Short pieces stay on one sheet. For another sheet, insert <div data-paper-break></div> on its own line between sections. -->
+
 ## References
 
 Link to the sources you used.

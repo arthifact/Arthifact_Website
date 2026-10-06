@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { formatPaper } from "../src/utils/paper.ts";
+import { formatPaper, formatPaperPages } from "../src/utils/paper.ts";
 import { fromHtml } from "hast-util-from-html";
 
 test("section numbers are readable text and preserve heading anchors", () => {
@@ -50,7 +50,7 @@ test("editorial columns preserve reading order around full-width media", () => {
   const elements = tree.children.filter((node) => node.type === "element");
   assert.deepEqual(
     elements.map((node) => node.tagName),
-    ["h2", "div", "figure", "h2", "div", "div", "section"],
+    ["h2", "div", "figure", "h2", "div", "figure", "div", "section"],
   );
   assert.deepEqual(
     elements[1].children.map((node) => node.properties.id),
@@ -58,12 +58,51 @@ test("editorial columns preserve reading order around full-width media", () => {
   );
   assert.deepEqual(
     elements[4].children.map((node) => node.properties.id),
-    ["c", "inline"],
+    ["c"],
   );
   assert.equal(elements[2].properties.id, "wide");
-  assert.equal(elements[5].properties.id, "code");
-  assert.equal(elements[6].properties.id, "footnotes");
+  assert.equal(elements[5].properties.id, "inline");
+  assert.equal(elements[6].properties.id, "code");
+  assert.equal(elements[7].properties.id, "footnotes");
   assert.doesNotMatch(formatPaper(source, false, 1), /paper-columns/);
+});
+
+test("authored sheets keep numbering and references continuous without empty pages", () => {
+  const pages = formatPaperPages(
+    '<div data-paper-break></div><h2 id="method">Method</h2><p><a href="#result">See the result.</a></p><div data-paper-break></div>\n<!-- author note --><div data-paper-break></div><h2 id="result">Results</h2><div data-paper-break></div>',
+    true,
+    2,
+  );
+  assert.equal(pages.length, 2);
+  assert.match(pages[0], /1\. <\/span>Method/);
+  assert.match(pages[0], /href="#result"/);
+  assert.match(pages[1], /id="result"/);
+  assert.match(pages[1], /2\. <\/span>Results/);
+  assert(pages.every((page) => !page.includes("data-paper-break")));
+  assert(pages.every((page) => !page.includes("author note")));
+  assert.equal(formatPaperPages("<p>A short article.</p>").length, 1);
+  assert.deepEqual(formatPaperPages(""), [""]);
+});
+
+test("figures and Markdown images span columns while retaining source order", () => {
+  const tree = fromHtml(
+    formatPaper(
+      '<p>Before.</p><p><a href="/image.png"><img src="/image.png" alt="Plot" width="800" height="400"></a></p><p>After.</p>',
+      false,
+      2,
+    ),
+    { fragment: true },
+  );
+  assert.deepEqual(
+    tree.children.map((node) => node.tagName),
+    ["div", "p", "div"],
+  );
+  assert.match(tree.children[0].children[0].children[0].value, /Before/);
+  assert.match(tree.children[2].children[0].children[0].value, /After/);
+  assert.throws(
+    () => formatPaperPages("<figure><div data-paper-break></div></figure>"),
+    /outside figures/,
+  );
 });
 
 test("long unsectioned writing reads in successive column pairs without duplicating content", () => {

@@ -22,10 +22,21 @@ function textLength(node: RootContent): number {
 function fullWidth(node: RootContent): boolean {
   if (node.type !== "element") return false;
   return (
-    ["pre", "iframe", "video", "style", "script"].includes(node.tagName) ||
+    [
+      "figure",
+      "img",
+      "picture",
+      "pre",
+      "iframe",
+      "video",
+      "style",
+      "script",
+    ].includes(node.tagName) ||
+    containsImage(node) ||
     classes(node).some((name) =>
       [
         "paper-wide",
+        "figure-grid",
         "expressive-code",
         "paper-table",
         "paper-table-scroll",
@@ -33,6 +44,13 @@ function fullWidth(node: RootContent): boolean {
         "interactive-model",
       ].includes(name),
     )
+  );
+}
+
+function containsImage(node: RootContent): boolean {
+  return (
+    node.type === "element" &&
+    (node.tagName === "img" || node.children.some(containsImage))
   );
 }
 
@@ -84,13 +102,8 @@ function arrangeColumns(tree: Root): void {
   tree.children = output;
 }
 
-/** Add readable section numbers and keyboard access to native HTML tables at build time. */
-export function formatPaper(
-  html: string,
-  numberedSections = false,
-  columns: 1 | 2 = 1,
-): string {
-  const tree = fromHtml(html, { fragment: true });
+/** Prepare the complete document before splitting, keeping numbering and references continuous. */
+function preparePaper(tree: Root, numberedSections: boolean): void {
   let section = 0;
   let table = 0;
   visit(tree, "element", (node, index, parent) => {
@@ -145,6 +158,59 @@ export function formatPaper(
     };
     return SKIP;
   });
-  if (columns === 2) arrangeColumns(tree);
-  return toHtml(tree);
+}
+
+function pageBreak(node: RootContent): boolean {
+  return (
+    node.type === "element" && Object.hasOwn(node.properties, "dataPaperBreak")
+  );
+}
+
+function hasContent(nodes: RootContent[]): boolean {
+  return nodes.some(
+    (node) =>
+      node.type === "element" || (node.type === "text" && node.value.trim()),
+  );
+}
+
+/** Author-controlled sheets, rendered once at build time with no browser pagination. */
+export function formatPaperPages(
+  html: string,
+  numberedSections = false,
+  columns: 1 | 2 = 1,
+): string[] {
+  const tree = fromHtml(html, { fragment: true });
+  visit(tree, "element", (node, _index, parent) => {
+    if (pageBreak(node) && parent?.type !== "root") {
+      throw new Error(
+        "Place a paper page break between sections, outside figures, tables, or other components.",
+      );
+    }
+  });
+  preparePaper(tree, numberedSections);
+  const pages: Root[] = [];
+  let children: RootContent[] = [];
+  const flush = () => {
+    if (hasContent(children)) pages.push({ type: "root", children });
+    children = [];
+  };
+  for (const node of tree.children) {
+    if (pageBreak(node)) flush();
+    else children.push(node);
+  }
+  flush();
+  if (pages.length === 0) pages.push({ type: "root", children: [] });
+  return pages.map((page) => {
+    if (columns === 2) arrangeColumns(page);
+    return toHtml(page);
+  });
+}
+
+/** Add readable section numbers and keyboard access to native HTML tables at build time. */
+export function formatPaper(
+  html: string,
+  numberedSections = false,
+  columns: 1 | 2 = 1,
+): string {
+  return formatPaperPages(html, numberedSections, columns).join("\n");
 }

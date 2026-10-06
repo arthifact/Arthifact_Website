@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { gzipSync } from "node:zlib";
+import { fromHtml } from "hast-util-from-html";
+import { visit } from "unist-util-visit";
 import { verifyPonyoGallery } from "./check-ponyo-gallery.mjs";
 
 const root = path.resolve("dist");
@@ -185,6 +187,21 @@ check(
   example.includes("paper-editorial") && example.includes("paper-columns"),
   "Paper example must use the editorial column layout.",
 );
+check(
+  (example.match(/class="paper-page"/g) || []).length === 3 &&
+    example.includes('aria-label="Page 3 of 3"') &&
+    !example.includes("data-paper-break"),
+  "Paper example must have three labelled sheets with consumed page breaks.",
+);
+visit(fromHtml(example), "element", (node) => {
+  if (!node.properties.className?.includes("paper-columns")) return;
+  visit(node, "element", (child) => {
+    check(
+      child.tagName !== "img",
+      "Article figures must sit across the text columns.",
+    );
+  });
+});
 check(
   gzipSync(example).length < 12 * 1024,
   "Paper example must stay below 12 KiB of compressed HTML.",

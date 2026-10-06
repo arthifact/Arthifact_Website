@@ -4,7 +4,7 @@
 @import "@fontsource/stix-two-text/latin-700-italic.css";
 
 body:has(.paper) {
-  background: #faf9f6;
+  background: #eeece7;
 }
 article.paper {
   --paper-width: 740px;
@@ -30,6 +30,48 @@ article.paper {
 .paper .article-topline a:hover {
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+.paper .paper-sheets {
+  display: grid;
+  gap: 36px;
+}
+.paper .paper-page {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: min(
+    calc(var(--paper-width) * 1.4143),
+    calc((100vw - var(--paper-gutter)) * 1.4143)
+  );
+  padding: 48px 54px 30px;
+  border: 1px solid #dedbd3;
+  background: #fff;
+  box-shadow: 0 3px 16px rgb(40 37 28 / 5%);
+}
+.paper .paper-page-content {
+  min-width: 0;
+}
+.paper .paper-running {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0 0 28px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #c9c7bb;
+  color: #66645d;
+  font-size: 12px;
+  letter-spacing: 0.025em;
+}
+.paper .paper-running span:last-child {
+  flex-shrink: 0;
+}
+.paper .paper-page-number {
+  margin-top: auto;
+  padding-top: 22px;
+  color: #66645d;
+  font-size: 13px;
+  font-variant-numeric: lining-nums tabular-nums;
+  text-align: center;
 }
 .paper .article-heading {
   margin: 0 0 36px;
@@ -165,11 +207,8 @@ article.paper {
   margin: 1.5em auto;
 }
 .paper .paper-wide {
-  width: min(1040px, calc(100vw - var(--paper-gutter)));
+  width: 100%;
   max-width: none;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
 }
 .paper .paper-figure {
   margin-block: 1.8em;
@@ -181,8 +220,9 @@ article.paper {
 .paper .paper-figure img {
   display: block;
   width: 100%;
+  max-width: var(--figure-max-width, 100%);
   height: auto;
-  margin: 0;
+  margin: 0 auto;
 }
 .paper .paper-figure figcaption,
 .paper .paper-table figcaption {
@@ -242,7 +282,7 @@ article.paper {
 }
 .paper .article-prose th,
 .paper .article-prose td {
-  padding: 9px 16px;
+  padding: 6px 16px;
   border: 0;
   vertical-align: top;
 }
@@ -297,7 +337,7 @@ article.paper {
   margin-block: 1.3em;
 }
 article.paper-editorial {
-  --paper-width: 1040px;
+  --paper-width: 980px;
 }
 .paper-editorial .article-heading {
   padding-bottom: 26px;
@@ -311,7 +351,7 @@ article.paper-editorial {
   align-items: start;
 }
 .paper-editorial .article-heading h1 {
-  font-size: clamp(36px, 3.8vw, 46px);
+  font-size: clamp(32px, 3.5vw, 40px);
   letter-spacing: -0.025em;
   line-height: 1.08;
   text-wrap: balance;
@@ -331,13 +371,13 @@ article.paper-editorial {
   padding: 0;
   border: 0;
   color: #343432;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.55;
 }
 .paper-editorial .article-prose {
-  font-size: 18px;
-  line-height: 1.55;
+  font-size: 17px;
+  line-height: 1.5;
 }
 .paper-editorial .article-prose h2 {
   font-size: 24px;
@@ -356,7 +396,7 @@ article.paper-editorial {
 .paper-editorial .paper-columns {
   column-count: 2;
   column-gap: 48px;
-  column-rule: 1px solid #e1ded4;
+  column-rule: 0;
   column-fill: balance;
   margin: 0 0 24px;
   orphans: 3;
@@ -414,7 +454,7 @@ article.paper-editorial {
   font-size: 14px;
 }
 .paper-editorial + .article-bottom {
-  max-width: 1040px;
+  max-width: 980px;
   margin-top: 32px;
 }
 @media (max-width: 939px) {
@@ -454,6 +494,23 @@ article.paper-editorial {
   font-size: 20px;
   margin-top: 0;
 }
+.paper-editorial .article-prose .footnotes {
+  font-size: 13.5px;
+  margin-top: 24px;
+  padding-top: 14px;
+}
+.paper-editorial .article-prose .footnotes h2 {
+  margin-bottom: 8px;
+  padding-top: 0;
+  border: 0;
+  font-size: 17px;
+}
+.paper-editorial .article-prose .footnotes ol {
+  margin-block: 8px 0;
+}
+.paper-editorial .article-prose .footnotes li p {
+  margin: 0;
+}
 .paper .article-prose sup {
   font-size: 0.65em;
 }
@@ -466,8 +523,15 @@ article.paper-editorial {
   }
 }
 @media (max-width: 760px) {
-  .paper {
+  article.paper {
     --paper-gutter: 40px;
+  }
+  .paper .paper-sheets {
+    gap: 24px;
+  }
+  .paper .paper-page {
+    min-height: 0;
+    padding: 28px 15px 22px;
   }
   .paper .article-topline {
     margin-bottom: 28px;
@@ -509,9 +573,25 @@ article.paper-editorial {
   @page {
     margin: 18mm;
   }
-  .paper {
+  article.paper {
     max-width: none;
     color: #000;
+  }
+  .paper .paper-sheets {
+    display: block;
+  }
+  .paper .paper-page {
+    display: block;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+  .paper .paper-page + .paper-page {
+    break-before: page;
+  }
+  .paper .paper-page-number {
+    padding-top: 6mm;
   }
   .paper .article-heading h1 {
     font-size: 28pt;

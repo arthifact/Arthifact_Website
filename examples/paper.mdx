@@ -15,6 +15,7 @@ unlisted: true
 import Figure from "@/components/paper/Figure.astro";
 import FigureGrid from "@/components/paper/FigureGrid.astro";
 import Table from "@/components/paper/Table.astro";
+import PageBreak from "@/components/paper/PageBreak.astro";
 
 {/* Copy into src/content/post/your-slug/index.mdx, then replace this text and example figure. For a project, use src/content/projects/your-slug/index.mdx and add kind: research (or project/art). */}
 
@@ -43,7 +44,9 @@ Refer to [Equation (1)](#eq-energy) in the text.
   **Replace this example figure.** Write a short caption describing the result. Images retain their proportions and open at full size when clicked.
 </Figure>
 
-{/* Put two Figure components inside <FigureGrid wide>...</FigureGrid> for paired panels. Leave wide off for figures within the text column. */}
+{/* Figures span both text columns by default. Put two Figure components inside <FigureGrid>...</FigureGrid> for paired panels. Use maxWidth={640} to center a smaller figure without changing its proportions. */}
+
+{/* Most short pieces can stay on one sheet. Insert <PageBreak /> on its own line between sections when you want another sheet. */}
 
 <Table id="table-results" number={1} caption="Replace these example values with your results.">
 
