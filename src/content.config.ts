@@ -12,6 +12,7 @@ const baseSchema = z.object({
   title: titleSchema,
   authors: z.array(z.string()).min(1).default(["Gabriel I. Alonso"]),
   format: z.enum(["article", "paper"]).default("article"),
+  columns: z.union([z.literal(1), z.literal(2)]).default(2),
   abstract: z.string().optional(),
   affiliation: z.string().optional(),
   numberedSections: z.boolean().default(false),

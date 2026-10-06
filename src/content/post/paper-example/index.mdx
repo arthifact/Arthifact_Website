@@ -4,12 +4,12 @@ description: "A paper layout example with equations, scientific figures, a table
 publishDate: "2026-10-06"
 format: paper
 numberedSections: true
+columns: 2
 unlisted: true
-abstract: "How much of a signal can we recover from a few noisy measurements? This example uses a Fourier basis and a smoothness penalty to reconstruct a synthetic signal from 24 samples. It shows how text, equations, figures, tables, and code fit together in a single reading column. The data and results are illustrative, and the figure generation script is included."
+abstract: "A Fourier basis and a smoothness penalty recover a synthetic signal from 24 noisy measurements. The example brings together equations, scientific figures, a results table, and code in an illustrated journal layout. The data are synthetic; the complete figure generation script is included."
 ---
 
 import Figure from "@/components/paper/Figure.astro";
-import FigureGrid from "@/components/paper/FigureGrid.astro";
 import Table from "@/components/paper/Table.astro";
 import samplingMatrix from "./sampling-matrix.png";
 import results from "./results.json";
@@ -49,10 +49,11 @@ We recover the coefficients by balancing the data fit with a penalty on high fre
 <div id="eq-objective" />
 
 $$
-\widehat{\mathbf c}
-= \underset{\mathbf c}{\operatorname{argmin}}\;
-\left\lVert A\mathbf c-\mathbf y\right\rVert_2^2
-+\lambda\,\mathbf c^{\mathsf T}R\mathbf c.
+\begin{aligned}
+\widehat{\mathbf c}&=\underset{\mathbf c}{\operatorname{argmin}}\;E(\mathbf c),\\
+E(\mathbf c)&=\lVert A\mathbf c-\mathbf y\rVert_2^2
++\lambda\mathbf c^{\mathsf T}R\mathbf c.
+\end{aligned}
 \tag{2}
 $$
 
@@ -66,29 +67,29 @@ $$
 
 The parameter $\lambda$ controls the tradeoff. Too little regularization leaves large oscillations. Too much removes useful detail. [Equation (2)](#eq-objective) and [Figure 1](#fig-reconstruction) describe the same choice in two ways.
 
+<Figure
+  id="fig-matrix"
+  number={2}
+  src={samplingMatrix}
+  alt="A red and blue heat map of the 24 by 21 sampling matrix. Each row is a sample position and each column is a Fourier basis coefficient."
+  caption="The sampling matrix. Each row evaluates the 21 basis functions at one measurement position."
+/>
+
 ## Results
 
 The regularized reconstruction in Figure 1 has a root mean square error of $0.2265$, compared with $1.3724$ for the unregularized fit. These errors are evaluated against the known signal on a dense grid, rather than at the noisy sample positions.[^evaluation]
 
-<FigureGrid wide>
-  <Figure
-    id="fig-matrix"
-    number={2}
-    src={samplingMatrix}
-    sizes="(min-width: 1150px) 506px, (min-width: 761px) calc((100vw - 124px) / 2), (min-width: 601px) calc((100vw - 68px) / 2), calc(100vw - 40px)"
-    alt="A red and blue heat map of the 24 by 21 sampling matrix. Each row is a sample position and each column is a Fourier basis coefficient."
-    caption="The sampling matrix. Each row evaluates the 21 basis functions at one measurement position."
-  />
-  <Figure
-    id="fig-regularization"
-    number={3}
-    src="/images/paper-example/regularization.svg"
-    width={500}
-    height={360}
-    alt="Reconstruction error decreases as regularization increases, reaches a minimum, then rises. An orange dashed line marks the illustrated regularization strength of ten to the minus four."
-    caption="Error across regularization strengths. The dashed line marks the fit shown in Figure 1; it is an illustrative choice, rather than the minimum of this curve."
-  />
-</FigureGrid>
+The lowest error among the four settings in [Table 1](#table-errors) occurs at $\lambda=10^{-3}$. That setting is stronger than the value illustrated in Figure 1. The difference is useful: a smoother reconstruction can improve average error while changing small features.
+
+<Figure
+  id="fig-regularization"
+  number={3}
+  src="/images/paper-example/regularization.svg"
+  width={500}
+  height={360}
+  alt="Reconstruction error decreases as regularization increases, reaches a minimum, then rises. An orange dashed line marks the illustrated regularization strength of ten to the minus four."
+  caption="Error across regularization strengths. The dashed line marks the fit shown in Figure 1; it is an illustrative choice, rather than the minimum of this curve."
+/>
 
 <Table id="table-errors" number={1} caption="Reconstruction error for the same 24 measurements. Lower values indicate a closer fit to the known signal.">
   <table>
@@ -123,7 +124,7 @@ The [figure generation script](https://github.com/arthifact/Arthifact_Website/bl
 
 ## Writing a paper
 
-Write the body in Markdown. Add LaTeX math with `$...$` and `$$...$$`. Use MDX when you want captioned figures, paired panels, or tables with more control. The same layout works for research, projects, and blog posts.
+Write the body in Markdown. Add LaTeX math with `$...$` and `$$...$$`. Text flows through short two-column sections on a wide screen and one column on a phone. Figures sit within a column unless marked `wide`, which lets them span the page.
 
 Start from the [paper template](https://github.com/arthifact/Arthifact_Website/blob/main/examples/paper.mdx). Set the title, authors, abstract, and date, then write. A `pdf` field adds a download link to an existing paper. Equations and formatting are prepared during the site build; the reader can view the article with JavaScript disabled.
 

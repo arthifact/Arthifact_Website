@@ -181,6 +181,31 @@ check(
   example.includes("srcset=") && example.includes("paper-wide"),
   "Paper example must demonstrate responsive images and wide figures.",
 );
+check(
+  example.includes("paper-editorial") && example.includes("paper-columns"),
+  "Paper example must use the editorial column layout.",
+);
+check(
+  gzipSync(example).length < 12 * 1024,
+  "Paper example must stay below 12 KiB of compressed HTML.",
+);
+const exampleScripts = [
+  ...example.matchAll(/<script\b[^>]+src="([^"]+)"[^>]*>/g),
+];
+check(
+  exampleScripts.length <= 1,
+  "Paper example may use only the small code accessibility helper.",
+);
+for (const script of exampleScripts) {
+  const file = resolveTarget(
+    script[1],
+    path.join(root, "posts/paper-example/index.html"),
+  )?.file;
+  check(
+    !!file && gzipSync(fs.readFileSync(file)).length < 1024,
+    "Paper example's accessibility helper must stay below 1 KiB compressed.",
+  );
+}
 const paperCssHref = example.match(
   /<link[^>]+href="([^"]+)"[^>]+data-paper-styles/,
 )?.[1];

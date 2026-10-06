@@ -16,7 +16,7 @@ npm run verify:site
 npm run preview
 ```
 
-`npm run build` also builds the Pagefind index and verifies the generated site. The homepage uses one small inline script to choose a Ponyo still; navigation and content also work with JavaScript disabled. The other core pages ship no client JavaScript. Index pages use system fonts; articles use locally hosted STIX Two Text. There are no external font requests or video players on initial load. The interactive Earth model loads its third-party viewer only after the reader requests it.
+`npm run build` refreshes the content cache, builds the Pagefind index, and verifies the generated site. The homepage uses one small inline script to choose a Ponyo still; navigation and content also work with JavaScript disabled. The other core pages ship no client JavaScript. Index pages use system fonts; articles use locally hosted STIX Two Text. There are no external font requests or video players on initial load. The interactive Earth model loads its third-party viewer only after the reader requests it.
 
 The verification command checks every built page for broken local links and anchors, image dimensions, a main heading, the CV, RSS content, and a 24 KiB gzipped HTML budget for the core pages. Gallery checks also exercise all 50 choices, repeat avoidance, unavailable session storage, and fallback behavior. GitHub Actions runs type checks, the production build, and verification on pull requests.
 
@@ -49,7 +49,7 @@ Add Markdown posts in `src/content/post/` with `title`, `description`, and `publ
 
 See the live [paper example](https://arthifact.com/posts/paper-example/), also linked at the top of Blog. It uses synthetic data to demonstrate the layout; it is unlisted, excluded from search and RSS, and is not a research entry. The optional figure generation script uses Python, NumPy, and Matplotlib; these are not site build dependencies.
 
-Research writeups, projects, art, posts, and notes share a 740px reading column with STIX Two Text, bold serif headings, restrained spacing, and a white background. Figures may span up to 1040px; paired panels stack on phones. There is no contents sidebar or automatic cover banner. Covers remain thumbnails on index pages; insert article figures where they belong. Print styles remove navigation and use compact manuscript typography.
+Research writeups, projects, art, posts, and notes use an illustrated journal layout with STIX Two Text, restrained serif headings, fine rules, and a warm paper background. On screens at least 940px wide, text reads through short, balanced column pairs on a page up to 1040px wide. Each heading begins a new section; larger media interrupt the columns so reading does not require scrolling back up a very tall column. Smaller screens use one reading column. There is no contents sidebar or automatic cover banner. Covers remain thumbnails on index pages; insert article figures where they belong. Print styles remove navigation and use compact manuscript typography.
 
 Start from `examples/paper.md` for plain text, math, and tables, or `examples/paper.mdx` for captioned figures and paired panels. Copy it into `src/content/post/<slug>/index.md` (or `.mdx`), set the title, summary, and date, and write the body. Remove `unlisted: true` when you want it in the blog and RSS. For a project, use `src/content/projects/<slug>/index.mdx` with `kind: research`, `project`, or `art`. Authors default to Gabriel I. Alonso; add an `authors` array for coauthors.
 
@@ -59,14 +59,15 @@ Optional frontmatter:
 format: paper
 abstract: "The question, method, and main result in one paragraph."
 numberedSections: true
+columns: 2 # Use 1 for a single reading column.
 authors: ["Gabriel I. Alonso", "Coauthor"]
 affiliation: "Your institution"
 pdf: "/files/your-paper.pdf"
 ```
 
-`abstract` replaces the description under the author line with a bold manuscript abstract. `numberedSections` numbers level-two headings while preserving their anchors; footnotes are not numbered as a section. `pdf` adds a download link: place a PDF in `public/files/` or use an HTTPS URL. Existing PDF papers can accompany the readable HTML article.
+`abstract` replaces the description with a manuscript abstract beside the title on wide screens. `columns` defaults to 2; use 1 for a single reading column. `numberedSections` numbers level-two headings while preserving their anchors; footnotes are not numbered as a section. `pdf` adds a download link: place a PDF in `public/files/` or use an HTTPS URL. Existing PDF papers can accompany the readable HTML article.
 
-In MDX, import `Figure`, `FigureGrid`, and `Table` from `@/components/paper/`. For a local raster image, import it from the article folder and pass it as `src`; Astro generates responsive WebP variants. SVG plots use a local `/images/...svg` path with explicit `width` and `height`. Always supply meaningful `alt` text. `Figure` takes `id`, `number`, and either `caption` or a rich Markdown caption in its body. Set `wide` to extend beyond the reading column, and wrap two figures in `<FigureGrid wide>` for paired panels. Clicking a figure opens the original image at full size.
+In MDX, import `Figure`, `FigureGrid`, and `Table` from `@/components/paper/`. For a local raster image, import it from the article folder and pass it as `src`; Astro generates responsive WebP variants. SVG plots use a local `/images/...svg` path with explicit `width` and `height`. Always supply meaningful `alt` text. `Figure` takes `id`, `number`, and either `caption` or a rich Markdown caption in its body. Leave `wide` off to place a figure among the text in a column; set `wide` to span both columns. Wrap two figures in `<FigureGrid wide>` for a full-width pair. Figures keep their original proportions and captions stay with their image. Clicking a figure opens the original image at full size. The optional `sizes` prop can refine responsive raster selection for custom placements.
 
 `Table` takes `id`, `number`, and `caption`, with a Markdown or HTML table inside. Tables retain native headers and fine horizontal rules; wide tables scroll in a labelled region that readers can focus with the keyboard. Code fences are highlighted during the build. Headings, links, lists, citations as links, and Markdown footnotes work normally.
 

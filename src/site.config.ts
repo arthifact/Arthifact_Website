@@ -43,6 +43,7 @@ export const menuLinks: { path: string; title: string }[] = [
 
 // https://expressive-code.com/reference/configuration/
 export const expressiveCodeOptions: AstroExpressiveCodeOptions = {
+  frames: { showCopyToClipboardButton: false },
   styleOverrides: {
     borderRadius: "4px",
     codeFontFamily:

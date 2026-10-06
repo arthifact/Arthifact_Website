@@ -27,6 +27,7 @@ const {
   affiliation,
   pdf,
   numberedSections,
+  columns,
 } = post.data;
 const unlisted = "unlisted" in post.data && post.data.unlisted;
 const updatedDate =
@@ -53,6 +54,7 @@ const articleDate = publishDate.toISOString();
 const content = formatPaper(
   await Astro.slots.render("default"),
   numberedSections,
+  columns,
 );
 const hasMath = /class="[^"]*\bkatex\b/.test(content);
 ---
@@ -71,58 +73,79 @@ const hasMath = /class="[^"]*\bkatex\b/.test(content);
     {hasMath && <link rel="stylesheet" href={mathStyles} data-math-styles />}
   </Fragment>
   <article
-    class:list={["paper", { "paper-manuscript": format === "paper" }]}
+    class:list={[
+      "paper",
+      {
+        "paper-manuscript": format === "paper",
+        "paper-editorial": columns === 2,
+      },
+    ]}
     data-pagefind-body={!unlisted || undefined}
     data-pagefind-ignore={unlisted || undefined}
   >
     <div class="article-topline mono">
       <a href={backLink}>← {backLabel}</a>
+      <span>{format === "paper" ? "Paper" : "Article"}</span>
     </div>
-    <header class="article-heading">
-      <h1>{title}</h1>
-      <p class="article-byline">
-        <span>{authors.join(" · ")}</span><span aria-hidden="true">
-          ·
-        </span><time datetime={articleDate}
-          >{
-            publishDate.toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-              timeZone: "UTC",
-            })
-          }</time
-        >
-      </p>
-      {affiliation && <p class="article-affiliation">{affiliation}</p>}
-      {
-        pdf && (
-          <a class="paper-pdf" href={pdf}>
-            Download PDF ↓
-          </a>
-        )
-      }
-      {
-        abstract ? (
-          <p class="article-abstract">
-            <strong>Abstract.</strong> {abstract}
-          </p>
-        ) : (
-          description && <p class="article-description">{description}</p>
-        )
-      }{
-        updatedDate && (
-          <p class="eyebrow">
-            Updated{" "}
-            <time datetime={updatedDate.toISOString()}>
-              {updatedDate.toLocaleDateString("en-GB", {
+    <header
+      class:list={[
+        "article-heading",
+        {
+          "article-heading-split": columns === 2 && !!(abstract || description),
+        },
+      ]}
+    >
+      <div class="article-title-block">
+        <h1>{title}</h1>
+        <p class="article-byline">
+          <span>{authors.join(" · ")}</span><span aria-hidden="true">
+            ·
+          </span><time datetime={articleDate}
+            >{
+              publishDate.toLocaleDateString("en-GB", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
                 timeZone: "UTC",
-              })}
-            </time>
-          </p>
+              })
+            }</time
+          >
+        </p>
+        {affiliation && <p class="article-affiliation">{affiliation}</p>}
+        {
+          pdf && (
+            <a class="paper-pdf" href={pdf}>
+              Download PDF ↓
+            </a>
+          )
+        }
+        {
+          updatedDate && (
+            <p class="eyebrow">
+              Updated{" "}
+              <time datetime={updatedDate.toISOString()}>
+                {updatedDate.toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                  timeZone: "UTC",
+                })}
+              </time>
+            </p>
+          )
+        }
+      </div>
+      {
+        (abstract || description) && (
+          <div class="article-summary">
+            {abstract ? (
+              <p class="article-abstract">
+                <strong>Abstract.</strong> {abstract}
+              </p>
+            ) : (
+              <p class="article-description">{description}</p>
+            )}
+          </div>
         )
       }
     </header>
