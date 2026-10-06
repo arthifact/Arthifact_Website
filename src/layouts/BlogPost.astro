@@ -79,6 +79,7 @@ const hasMath = pages.some((content) => /class="[^"]*\bkatex\b/.test(content));
       {
         "paper-manuscript": format === "paper",
         "paper-reading": columns === 1,
+        "paper-columned": columns === 2,
       },
     ]}
     data-pagefind-body={!unlisted || undefined}
@@ -102,15 +103,7 @@ const hasMath = pages.some((content) => /class="[^"]*\bkatex\b/.test(content));
           >
             <div class="paper-page-content">
               {index === 0 ? (
-                <header
-                  class:list={[
-                    "article-heading",
-                    {
-                      "article-heading-split":
-                        columns === 2 && !!(abstract || description),
-                    },
-                  ]}
-                >
+                <header class="article-heading">
                   <div class="article-title-block">
                     <h1>{title}</h1>
                     <p class="article-byline">

@@ -184,8 +184,9 @@ check(
   "Paper example must demonstrate responsive images and wide figures.",
 );
 check(
-  example.includes("paper-reading") && !example.includes("paper-columns"),
-  "Paper example must use one continuous reading column.",
+  example.includes("paper-columned") &&
+    (example.match(/class="paper-columns"/g) || []).length === 2,
+  "Paper example must have one continuous column pair per sheet.",
 );
 check(
   !example.includes("paper-figure-side") &&
@@ -201,6 +202,30 @@ check(
 const exampleHeadings = [];
 visit(fromHtml(example), "element", (node) => {
   if (node.tagName === "h2") exampleHeadings.push(node.properties.id);
+  if (node.properties.className?.includes("paper-page")) {
+    let flows = 0;
+    visit(node, "element", (child) => {
+      if (child.properties.className?.includes("paper-columns")) flows++;
+    });
+    check(
+      flows === 1,
+      "Each example sheet must have one continuous left-to-right column flow.",
+    );
+  }
+  if (node.properties.className?.includes("paper-columns")) {
+    let headings = 0;
+    visit(node, "element", (child) => {
+      if (child.tagName === "h2") headings++;
+      check(
+        !child.properties.className?.includes("paper-wide"),
+        "Wide figures must sit outside the text column flow.",
+      );
+    });
+    check(
+      headings >= 2,
+      "Successive sections must share the same column flow.",
+    );
+  }
   if (!node.properties.className?.includes("figure-grid")) return;
   visit(node, "element", (child) => {
     check(
@@ -213,7 +238,7 @@ check(
   exampleHeadings.join(",") ===
     "introduction,method,results,code,writing-a-paper,footnote-label" &&
     example.indexOf('id="table-errors"') < example.indexOf('id="code"'),
-  "The example must present results and their table before code in a single reading sequence.",
+  "The example must preserve the authored section order and place the results table before code.",
 );
 check(
   gzipSync(example).length < 12 * 1024,

@@ -9,41 +9,27 @@ function classes(node: RootContent): string[] {
     : [];
 }
 
-function textLength(node: RootContent): number {
-  if (node.type === "text")
-    return node.value.trim().split(/\s+/).filter(Boolean).length;
-  if (node.type !== "element") return 0;
-  // Count an equation as a block, without counting its duplicate visual/MathML text.
-  if (classes(node).includes("katex-display")) return 60;
-  if (classes(node).includes("katex")) return 3;
-  return node.children.reduce((sum, child) => sum + textLength(child), 0);
+function spacing(node: RootContent | undefined): boolean {
+  return (
+    node?.type === "comment" || (node?.type === "text" && !node.value.trim())
+  );
 }
 
 function fullWidth(node: RootContent): boolean {
   if (node.type !== "element") return false;
-  return (
-    [
-      "figure",
-      "img",
-      "picture",
-      "pre",
-      "iframe",
-      "video",
-      "style",
-      "script",
-    ].includes(node.tagName) ||
-    containsImage(node) ||
-    classes(node).some((name) =>
-      [
-        "paper-wide",
-        "figure-grid",
-        "expressive-code",
-        "paper-table",
-        "paper-table-scroll",
-        "footnotes",
-        "interactive-model",
-      ].includes(name),
+  const names = classes(node);
+  // Component authors choose whether a figure spans the columns. Tables stay
+  // with the prose unless explicitly marked wide.
+  if (
+    names.some((name) =>
+      ["paper-figure", "figure-grid", "paper-table"].includes(name),
     )
+  )
+    return names.includes("paper-wide");
+  return (
+    names.some((name) => ["paper-wide", "interactive-model"].includes(name)) ||
+    ["img", "picture", "iframe", "video"].includes(node.tagName) ||
+    containsImage(node)
   );
 }
 
@@ -54,21 +40,21 @@ function containsImage(node: RootContent): boolean {
   );
 }
 
-/** Keep each column pair short and preserve the source's reading and keyboard order. */
+/** Flow down the left column, then from the top of the right; headings never restart columns. */
 function arrangeColumns(tree: Root): void {
   const output: RootContent[] = [];
   let flow: RootContent[] = [];
-  let words = 0;
   const flush = () => {
     if (
       !flow.some(
         (node) =>
-          node.type === "element" ||
+          (node.type === "element" &&
+            !["style", "script", "link", "meta"].includes(node.tagName)) ||
           (node.type === "text" && node.value.trim()),
       )
     ) {
+      output.push(...flow);
       flow = [];
-      words = 0;
       return;
     }
     output.push({
@@ -78,32 +64,53 @@ function arrangeColumns(tree: Root): void {
       children: flow as Element["children"],
     });
     flow = [];
-    words = 0;
   };
   for (const node of tree.children) {
-    const heading = node.type === "element" && node.tagName === "h2";
-    if (heading || fullWidth(node)) {
+    if (fullWidth(node)) {
       flush();
       output.push(node);
       continue;
     }
-    // A long unsectioned essay should still read in successive column pairs.
-    if (
-      words > 480 &&
-      node.type === "element" &&
-      node.tagName === "p" &&
-      textLength(node) > 40
-    )
-      flush();
     flow.push(node);
-    words += textLength(node);
   }
   flush();
   tree.children = output;
 }
 
+/** Attach an authored equation anchor to its equation so a column break cannot separate them. */
+function attachEquationAnchors(tree: Root): void {
+  visit(tree, (parent) => {
+    if (parent.type !== "root" && parent.type !== "element") return;
+    for (let index = 0; index < parent.children.length; index++) {
+      const anchor = parent.children[index];
+      if (
+        anchor?.type !== "element" ||
+        anchor.tagName !== "div" ||
+        typeof anchor.properties.id !== "string" ||
+        Object.keys(anchor.properties).length !== 1 ||
+        !anchor.children.every(spacing)
+      )
+        continue;
+      let next = index + 1;
+      while (next < parent.children.length && spacing(parent.children[next]))
+        next++;
+      const equation = parent.children[next];
+      if (
+        equation?.type === "element" &&
+        classes(equation).includes("katex-display") &&
+        !equation.properties.id
+      ) {
+        equation.properties.id = anchor.properties.id;
+        parent.children.splice(index, 1);
+        index--;
+      }
+    }
+  });
+}
+
 /** Prepare the complete document before splitting, keeping numbering and references continuous. */
 function preparePaper(tree: Root, numberedSections: boolean): void {
+  attachEquationAnchors(tree);
   let section = 0;
   let table = 0;
   visit(tree, "element", (node, index, parent) => {

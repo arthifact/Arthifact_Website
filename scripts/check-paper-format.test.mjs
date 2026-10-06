@@ -43,31 +43,36 @@ test("plain tables get labels and MathML, Unicode, and code remain intact", () =
   assert.match(result, /<code>a &#x3C; b<\/code>/);
 });
 
-test("editorial columns preserve reading order around full-width media", () => {
+test("headings, equations, code, and tables continue within the same page columns", () => {
   const source =
-    '<h2 id="intro">Introduction</h2><p id="a">First paragraph.</p><p id="b">Second paragraph.</p><figure class="paper-wide" id="wide">Wide figure</figure><h2 id="method">Method</h2><p id="c">Method text.</p><figure class="paper-figure" id="inline">Inline figure</figure><div class="expressive-code" id="code">Code</div><section class="footnotes" id="footnotes">Footnotes</section>';
+    '<figure class="paper-wide" id="wide">Wide figure</figure><h2 id="intro">Introduction</h2><p id="a">First paragraph.</p><p id="b">Second paragraph.</p><h2 id="method">Method</h2><p id="c">Method text.</p><span class="katex-display" id="equation"><math><mi>x</mi></math></span><figure class="paper-table" id="table"><table><thead><tr><th>Error</th></tr></thead></table></figure><figure class="paper-figure" id="inline">Inline figure</figure><div class="expressive-code" id="code">Code</div><section class="footnotes" id="footnotes">Footnotes</section>';
   const tree = fromHtml(formatPaper(source, true, 2), { fragment: true });
   const elements = tree.children.filter((node) => node.type === "element");
   assert.deepEqual(
     elements.map((node) => node.tagName),
-    ["h2", "div", "figure", "h2", "div", "figure", "div", "section"],
+    ["figure", "div"],
   );
   assert.deepEqual(
     elements[1].children.map((node) => node.properties.id),
-    ["a", "b"],
+    [
+      "intro",
+      "a",
+      "b",
+      "method",
+      "c",
+      "equation",
+      "table",
+      "inline",
+      "code",
+      "footnotes",
+    ],
   );
-  assert.deepEqual(
-    elements[4].children.map((node) => node.properties.id),
-    ["c"],
-  );
-  assert.equal(elements[2].properties.id, "wide");
-  assert.equal(elements[5].properties.id, "inline");
-  assert.equal(elements[6].properties.id, "code");
-  assert.equal(elements[7].properties.id, "footnotes");
+  assert.equal(elements[0].properties.id, "wide");
+  assert.match(formatPaper(source, true, 2), /scope="col"/);
   assert.doesNotMatch(formatPaper(source, false, 1), /paper-columns/);
 });
 
-test("default reading flow keeps prose and equations in their authored sequence", () => {
+test("the single-column option keeps prose and equations in their authored sequence", () => {
   const result = formatPaper(
     '<h2 id="method">Method</h2><p id="before">Define the model.</p><span class="katex-display" id="equation"><math><mi>x</mi></math></span><p id="after">Explain the equation.</p><figure id="figure">Result</figure><h2 id="results">Results</h2><p id="conclusion">Discuss the result.</p>',
     true,
@@ -127,17 +132,14 @@ test("figures and Markdown images span columns while retaining source order", ()
   );
 });
 
-test("long unsectioned writing reads in successive column pairs without duplicating content", () => {
+test("long writing does not restart the page's columns after a word threshold", () => {
   const paragraph = Array.from({ length: 60 }, () => "word").join(" ");
   const source = Array.from(
     { length: 12 },
     (_, index) => `<p id="p${index}">${paragraph}</p>`,
   ).join("");
   const tree = fromHtml(formatPaper(source, false, 2), { fragment: true });
-  assert(
-    tree.children.length > 1,
-    "A long essay should not form one tall column pair.",
-  );
+  assert.equal(tree.children.length, 1);
   assert.deepEqual(
     tree.children.flatMap((group) =>
       group.children.map((node) => node.properties.id),
@@ -161,5 +163,33 @@ test("composed panels retain native headings, table labels, and their reading or
   assert(
     result.indexOf('id="errors-caption"') < result.indexOf('id="writing"'),
   );
-  assert.doesNotMatch(result, /paper-columns/);
+  assert.equal((result.match(/class="paper-columns"/g) ?? []).length, 1);
+});
+
+test("equation links target the equation itself across column breaks", () => {
+  const result = formatPaper(
+    '<p><a href="#eq-energy">Energy</a></p><div id="eq-energy"></div>\n<!-- equation --><span class="katex-display"><math><mi>E</mi></math></span>',
+    false,
+    2,
+  );
+  assert.match(result, /class="katex-display" id="eq-energy"/);
+  assert.match(result, /href="#eq-energy"/);
+  assert.equal((result.match(/id="eq-energy"/g) ?? []).length, 1);
+  assert.match(result, /<math><mi>E<\/mi><\/math>/);
+});
+
+test("nonvisual assets do not create empty column pairs", () => {
+  const tree = fromHtml(
+    formatPaper(
+      '<style>p{color:black}</style><script>void 0</script><figure class="paper-wide">Figure</figure><p>Text</p>',
+      false,
+      2,
+    ),
+    { fragment: true },
+  );
+  assert.deepEqual(
+    tree.children.map((node) => node.tagName),
+    ["style", "script", "figure", "div"],
+  );
+  assert.deepEqual(tree.children[3].properties.className, ["paper-columns"]);
 });

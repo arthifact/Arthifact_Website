@@ -4,7 +4,7 @@ description: "A paper layout example with equations, scientific figures, a table
 publishDate: "2026-10-06"
 format: paper
 numberedSections: true
-columns: 1
+columns: 2
 unlisted: true
 abstract: "A synthetic signal reconstructed from 24 noisy measurements. A Fourier basis models its shape, and a smoothness penalty controls how closely the fit follows noise."
 ---
@@ -70,12 +70,6 @@ The parameter $\lambda$ controls the tradeoff: a small value leaves oscillations
 
 <PageBreak />
 
-## Results
-
-The regularized reconstruction in Figure 1 has a root mean square error of $0.2265$, compared with $1.3724$ for the unregularized fit. These errors are evaluated against the known signal on a dense grid, rather than at the noisy sample positions.[^evaluation]
-
-The lowest error occurs at $\lambda=10^{-3}$ ([Table 1](#table-errors)), a stronger setting than Figure 1 uses. The smoother fit reduces average error while changing some smaller features.
-
 <FigureGrid layout="lead">
 
 <Figure
@@ -98,6 +92,12 @@ The lowest error occurs at $\lambda=10^{-3}$ ([Table 1](#table-errors)), a stron
 />
 
 </FigureGrid>
+
+## Results
+
+The regularized reconstruction in Figure 1 has a root mean square error of $0.2265$, compared with $1.3724$ for the unregularized fit. These errors are evaluated against the known signal on a dense grid, rather than at the noisy sample positions.[^evaluation]
+
+The lowest error occurs at $\lambda=10^{-3}$ ([Table 1](#table-errors)), a stronger setting than Figure 1 uses. The smoother fit reduces average error while changing some smaller features.
 
 <Table id="table-errors" number={1} caption="Reconstruction error for the same 24 measurements. Lower values indicate a closer fit to the known signal.">
   <table>
@@ -130,7 +130,7 @@ The [figure generation script](https://github.com/arthifact/Arthifact_Website/bl
 
 ## Writing a paper
 
-Write in Markdown with LaTeX math: `$...$` inline and `$$...$$` for equations. Figures can span the sheet while the text reads in one column. Add `<PageBreak />` between sections for another sheet.
+Write in Markdown with LaTeX math: `$...$` inline and `$$...$$` for equations. Read down the left column, then continue from the top of the right. Wide figures can span the sheet. Add `<PageBreak />` between sections for another sheet.
 
 Copy the [paper template](https://github.com/arthifact/Arthifact_Website/blob/main/examples/paper.mdx), then set your title, authors, abstract, and date. Use `pdf` to link an existing paper. Formatting is prepared during the build, so the page works with JavaScript disabled.
 

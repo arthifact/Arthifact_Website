@@ -8,3 +8,14 @@
   overflow-y: hidden;
   padding-block: 0.5em;
 }
+
+/* Reserve space for equation numbers; long formulas scroll without overlap. */
+.paper .katex-display > .katex > .katex-html:has(> .tag) {
+  box-sizing: border-box;
+  width: max-content;
+  min-width: 100%;
+  padding-inline-end: 2.5em;
+}
+.paper .katex-display.leqno > .katex > .katex-html:has(> .tag) {
+  padding-inline: 2.5em 0;
+}
