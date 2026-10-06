@@ -548,6 +548,52 @@ article.paper-editorial {
 .article-bottom {
   max-width: 740px;
 }
+/* A single reading measure keeps prose, equations, and headings in one path. */
+article.paper-reading {
+  --paper-type-size: 1.1875rem;
+  --paper-reading-width: 36rem;
+}
+.paper-reading .article-heading {
+  max-width: var(--paper-reading-width);
+  margin-inline: auto;
+}
+.paper-reading .article-summary {
+  margin-top: 1.25em;
+}
+.paper-reading .article-prose {
+  line-height: 1.6;
+}
+.paper-reading
+  .article-prose
+  > :is(
+    p,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    ul,
+    ol,
+    blockquote,
+    .katex-display,
+    .expressive-code,
+    .paper-table,
+    .paper-table-scroll,
+    .footnotes,
+    section
+  ),
+.paper-reading .paper-figure figcaption {
+  max-width: var(--paper-reading-width);
+  margin-inline: auto;
+}
+.paper-reading .article-prose > p:has(img) {
+  max-width: none;
+}
+.paper-reading .figure-grid:has(.paper-panel) {
+  grid-template-columns: 1fr;
+  max-width: var(--paper-reading-width);
+  margin-inline: auto;
+}
 /* Scale against the sheet width, with rem floors that respect text preferences. */
 @supports (width: 1cqw) {
   article.paper {
@@ -562,6 +608,9 @@ article.paper-editorial {
     --paper-type-size: clamp(1rem, calc(0.75rem + 0.510204cqw), 1.0625rem);
     --paper-padding-inline: clamp(0.9375rem, 5.510204cqw, 3.375rem);
     --paper-padding-block: clamp(1.75rem, 4.897959cqw, 3rem);
+  }
+  article.paper-reading {
+    --paper-type-size: clamp(1.125rem, calc(0.875rem + 0.510204cqw), 1.1875rem);
   }
   .paper .article-heading h1 {
     font-size: clamp(2.125rem, 6.486486cqw, 3rem);
@@ -625,6 +674,7 @@ article.paper-editorial {
     max-width: none;
     container-type: normal;
     --paper-type-size: 11pt;
+    --paper-reading-width: none;
     --paper-column-gap: 8mm;
     --paper-panel-gap: 6mm;
     --paper-detail-gap: 5mm;

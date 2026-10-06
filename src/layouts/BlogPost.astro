@@ -75,9 +75,10 @@ const hasMath = pages.some((content) => /class="[^"]*\bkatex\b/.test(content));
   <article
     class:list={[
       "paper",
+      "paper-editorial",
       {
         "paper-manuscript": format === "paper",
-        "paper-editorial": columns === 2,
+        "paper-reading": columns === 1,
       },
     ]}
     data-pagefind-body={!unlisted || undefined}

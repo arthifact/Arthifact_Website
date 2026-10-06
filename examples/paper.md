@@ -4,7 +4,7 @@ description: "A short summary of the work."
 publishDate: "2026-10-05"
 format: paper
 numberedSections: true
-columns: 2
+columns: 1
 abstract: "State the question, method, and main result in one paragraph."
 # authors: ["Gabriel I. Alonso", "Coauthor"]
 # affiliation: "Your institution"

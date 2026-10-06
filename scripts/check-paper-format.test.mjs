@@ -67,6 +67,28 @@ test("editorial columns preserve reading order around full-width media", () => {
   assert.doesNotMatch(formatPaper(source, false, 1), /paper-columns/);
 });
 
+test("default reading flow keeps prose and equations in their authored sequence", () => {
+  const result = formatPaper(
+    '<h2 id="method">Method</h2><p id="before">Define the model.</p><span class="katex-display" id="equation"><math><mi>x</mi></math></span><p id="after">Explain the equation.</p><figure id="figure">Result</figure><h2 id="results">Results</h2><p id="conclusion">Discuss the result.</p>',
+    true,
+  );
+  const tree = fromHtml(result, { fragment: true });
+  assert.deepEqual(
+    tree.children.map((node) => node.properties.id),
+    [
+      "method",
+      "before",
+      "equation",
+      "after",
+      "figure",
+      "results",
+      "conclusion",
+    ],
+  );
+  assert.doesNotMatch(result, /paper-columns/);
+  assert.match(result, /<math><mi>x<\/mi><\/math>/);
+});
+
 test("authored sheets keep numbering and references continuous without empty pages", () => {
   const pages = formatPaperPages(
     '<div data-paper-break></div><h2 id="method">Method</h2><p><a href="#result">See the result.</a></p><div data-paper-break></div>\n<!-- author note --><div data-paper-break></div><h2 id="result">Results</h2><div data-paper-break></div>',

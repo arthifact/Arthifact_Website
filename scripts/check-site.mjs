@@ -184,12 +184,13 @@ check(
   "Paper example must demonstrate responsive images and wide figures.",
 );
 check(
-  example.includes("paper-editorial") && example.includes("paper-columns"),
-  "Paper example must use the editorial column layout.",
+  example.includes("paper-reading") && !example.includes("paper-columns"),
+  "Paper example must use one continuous reading column.",
 );
 check(
-  example.includes("paper-figure-side") && example.includes("figure-grid-lead"),
-  "Paper example must demonstrate side captions and a lead figure with a smaller supporting panel.",
+  !example.includes("paper-figure-side") &&
+    example.includes("figure-grid-lead"),
+  "Paper example must keep captions below figures and retain the paired image composition.",
 );
 check(
   (example.match(/class="paper-page"/g) || []).length === 2 &&
@@ -197,15 +198,23 @@ check(
     !example.includes("data-paper-break"),
   "Paper example must have two labelled sheets with consumed page breaks.",
 );
+const exampleHeadings = [];
 visit(fromHtml(example), "element", (node) => {
-  if (!node.properties.className?.includes("paper-columns")) return;
+  if (node.tagName === "h2") exampleHeadings.push(node.properties.id);
+  if (!node.properties.className?.includes("figure-grid")) return;
   visit(node, "element", (child) => {
     check(
-      child.tagName !== "img",
-      "Article figures must sit across the text columns.",
+      !/^h[1-6]$/.test(child.tagName),
+      "The example must pair images without introducing competing text sections.",
     );
   });
 });
+check(
+  exampleHeadings.join(",") ===
+    "introduction,method,results,code,writing-a-paper,footnote-label" &&
+    example.indexOf('id="table-errors"') < example.indexOf('id="code"'),
+  "The example must present results and their table before code in a single reading sequence.",
+);
 check(
   gzipSync(example).length < 12 * 1024,
   "Paper example must stay below 12 KiB of compressed HTML.",

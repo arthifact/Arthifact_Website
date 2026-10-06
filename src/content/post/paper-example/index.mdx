@@ -4,7 +4,7 @@ description: "A paper layout example with equations, scientific figures, a table
 publishDate: "2026-10-06"
 format: paper
 numberedSections: true
-columns: 2
+columns: 1
 unlisted: true
 abstract: "A synthetic signal reconstructed from 24 noisy measurements. A Fourier basis models its shape, and a smoothness penalty controls how closely the fit follows noise."
 ---
@@ -19,7 +19,6 @@ import results from "./results.json";
 <Figure
   id="fig-reconstruction"
   number={1}
-  captionPosition="side"
   src="/images/paper-example/reconstruction.svg"
   width={1040}
   height={410}
@@ -69,13 +68,13 @@ $$
 
 The parameter $\lambda$ controls the tradeoff: a small value leaves oscillations, while a large value removes detail. [Equation (2)](#eq-objective) and [Figure 1](#fig-reconstruction) show that choice in two forms.
 
+<PageBreak />
+
 ## Results
 
 The regularized reconstruction in Figure 1 has a root mean square error of $0.2265$, compared with $1.3724$ for the unregularized fit. These errors are evaluated against the known signal on a dense grid, rather than at the noisy sample positions.[^evaluation]
 
 The lowest error occurs at $\lambda=10^{-3}$ ([Table 1](#table-errors)), a stronger setting than Figure 1 uses. The smoother fit reduces average error while changing some smaller features.
-
-<PageBreak />
 
 <FigureGrid layout="lead">
 
@@ -100,9 +99,14 @@ The lowest error occurs at $\lambda=10^{-3}$ ([Table 1](#table-errors)), a stron
 
 </FigureGrid>
 
-<FigureGrid>
-
-<section className="paper-panel">
+<Table id="table-errors" number={1} caption="Reconstruction error for the same 24 measurements. Lower values indicate a closer fit to the known signal.">
+  <table>
+    <thead><tr><th>Regularization, λ</th><th style={{textAlign: "right"}}>RMSE</th></tr></thead>
+    <tbody>
+      {results.results.map((row) => <tr><td>{row.lambda === 0 ? "0 (unregularized)" : row.lambda.toFixed(5)}</td><td style={{textAlign: "right"}}>{row.rmse.toFixed(4)}</td></tr>)}
+    </tbody>
+  </table>
+</Table>
 
 ## Code
 
@@ -124,27 +128,10 @@ def reconstruct(A, B, y, k, strength):
 
 The [figure generation script](https://github.com/arthifact/Arthifact_Website/blob/main/scripts/generate-paper-example.py) contains the signal, samples, plots, and table values. It uses a fixed random seed so the example can be reproduced.
 
-</section>
-
-<section className="paper-panel">
-
-<Table id="table-errors" number={1} caption="Reconstruction error for the same 24 measurements. Lower values indicate a closer fit to the known signal.">
-  <table>
-    <thead><tr><th>Regularization, λ</th><th style={{textAlign: "right"}}>RMSE</th></tr></thead>
-    <tbody>
-      {results.results.map((row) => <tr><td>{row.lambda === 0 ? "0 (unregularized)" : row.lambda.toFixed(5)}</td><td style={{textAlign: "right"}}>{row.rmse.toFixed(4)}</td></tr>)}
-    </tbody>
-  </table>
-</Table>
-
 ## Writing a paper
 
-Write in Markdown with LaTeX math: `$...$` inline and `$$...$$` for equations. Figures span both columns. Add `<PageBreak />` between sections for another sheet.
+Write in Markdown with LaTeX math: `$...$` inline and `$$...$$` for equations. Figures can span the sheet while the text reads in one column. Add `<PageBreak />` between sections for another sheet.
 
 Copy the [paper template](https://github.com/arthifact/Arthifact_Website/blob/main/examples/paper.mdx), then set your title, authors, abstract, and date. Use `pdf` to link an existing paper. Formatting is prepared during the build, so the page works with JavaScript disabled.
-
-</section>
-
-</FigureGrid>
 
 [^evaluation]: The known signal is available because this is a synthetic example. In an actual inverse problem, evaluation requires independent evidence or held out measurements.
