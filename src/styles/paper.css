@@ -6,9 +6,19 @@
 body:has(.paper) {
   background: #eeece7;
 }
+body:has(.paper) .site-shell {
+  width: min(1240px, calc(100% - clamp(40px, 8vw, 96px)));
+}
 article.paper {
   --paper-width: 740px;
-  --paper-gutter: 96px;
+  --paper-gutter: clamp(40px, 8vw, 96px);
+  --paper-type-size: 1.25rem;
+  --paper-padding-inline: 3.375rem;
+  --paper-padding-block: 3rem;
+  --paper-column-gap: 3rem;
+  --paper-panel-gap: 1.75rem;
+  --paper-detail-gap: 1.5rem;
+  container-type: inline-size;
   max-width: var(--paper-width);
   color: #20201e;
   font-family: "STIX Two Text", "Times New Roman", serif;
@@ -33,7 +43,7 @@ article.paper {
 }
 .paper .paper-sheets {
   display: grid;
-  gap: 36px;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
 }
 .paper .paper-page {
   display: flex;
@@ -43,7 +53,8 @@ article.paper {
     calc(var(--paper-width) * 1.4143),
     calc((100vw - var(--paper-gutter)) * 1.4143)
   );
-  padding: 48px 54px 30px;
+  padding: var(--paper-padding-block) var(--paper-padding-inline) 1.5em;
+  font-size: var(--paper-type-size);
   border: 1px solid #dedbd3;
   background: #fff;
   box-shadow: 0 3px 16px rgb(40 37 28 / 5%);
@@ -55,11 +66,11 @@ article.paper {
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  margin: 0 0 28px;
-  padding-bottom: 12px;
+  margin: 0 0 2.15em;
+  padding-bottom: 1em;
   border-bottom: 1px solid #c9c7bb;
   color: #66645d;
-  font-size: 12px;
+  font-size: 0.75em;
   letter-spacing: 0.025em;
 }
 .paper .paper-running span:last-child {
@@ -67,9 +78,9 @@ article.paper {
 }
 .paper .paper-page-number {
   margin-top: auto;
-  padding-top: 22px;
+  padding-top: 1.7em;
   color: #66645d;
-  font-size: 13px;
+  font-size: 0.765em;
   font-variant-numeric: lining-nums tabular-nums;
   text-align: center;
 }
@@ -80,10 +91,10 @@ article.paper {
   text-align: right;
 }
 .paper .article-heading {
-  margin: 0 0 36px;
+  margin: 0 0 1.8em;
 }
 .paper .article-heading h1 {
-  margin: 0 0 18px;
+  margin: 0 0 0.375em;
   font-family: inherit;
   font-size: clamp(34px, 4.2vw, 48px);
   font-weight: 700;
@@ -94,30 +105,30 @@ article.paper {
 }
 .paper .article-byline {
   margin: 0 0 5px;
-  font-size: 17px;
+  font-size: 0.85em;
   color: #343432;
   line-height: 1.5;
 }
 .paper .article-byline time {
-  font-size: 15px;
+  font-size: 0.882353em;
   color: #64645e;
 }
 .paper .article-affiliation {
   margin: 0;
-  font-size: 15px;
+  font-size: 0.75em;
   color: #64645e;
 }
 .paper .article-description {
-  margin: 26px 0 0;
+  margin: 1.3em 0 0;
   color: #343432;
-  font-size: 21px;
+  font-size: 1.05em;
   line-height: 1.5;
 }
 .paper .article-abstract {
-  margin: 28px 0 0;
-  padding: 0 0 26px;
+  margin: 1.55em 0 0;
+  padding: 0 0 1.45em;
   border-bottom: 1px solid #292925;
-  font-size: 18px;
+  font-size: 0.9em;
   font-weight: 700;
   line-height: 1.55;
 }
@@ -133,7 +144,7 @@ article.paper {
   width: 100%;
   max-width: none;
   font-family: inherit;
-  font-size: 20px;
+  font-size: 1em;
   line-height: 1.65;
   overflow-wrap: break-word;
   --tw-prose-headings: #20201e;
@@ -144,7 +155,7 @@ article.paper {
 }
 .paper .article-prose h2 {
   margin: 2em 0 0.6em;
-  font-size: 26px;
+  font-size: 1.3em;
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.015em;
@@ -152,7 +163,7 @@ article.paper {
 }
 .paper .article-prose h3 {
   margin: 1.6em 0 0.5em;
-  font-size: 21px;
+  font-size: 1.05em;
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: 0;
@@ -232,9 +243,9 @@ article.paper {
 }
 .paper .paper-figure figcaption,
 .paper .paper-table figcaption {
-  margin: 12px 0 0;
+  margin: 0.75em 0 0;
   color: #343432;
-  font-size: 16px;
+  font-size: 0.8em;
   line-height: 1.5;
   text-align: left;
 }
@@ -249,7 +260,7 @@ article.paper {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: 28px;
+  gap: var(--paper-panel-gap);
   margin-block: 1.8em;
 }
 .paper .figure-grid .paper-figure {
@@ -264,12 +275,12 @@ article.paper {
 .paper .paper-figure-side {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
-  gap: 24px;
+  gap: var(--paper-detail-gap);
   align-items: end;
 }
 .paper .paper-figure-side figcaption {
   margin: 0;
-  font-size: 13px;
+  font-size: 0.765em;
   line-height: 1.45;
 }
 .paper .figure-grid > * {
@@ -306,13 +317,13 @@ article.paper {
   border-top: 1.5px solid #292925;
   border-bottom: 1.5px solid #292925;
   margin: 0;
-  font-size: 17px;
+  font-size: 0.85em;
   font-variant-numeric: tabular-nums;
   line-height: 1.45;
 }
 .paper .article-prose th,
 .paper .article-prose td {
-  padding: 6px 16px;
+  padding: 0.375em 1em;
   border: 0;
   vertical-align: top;
 }
@@ -355,7 +366,8 @@ article.paper {
 }
 .paper .expressive-code {
   margin-block: 1.5em;
-  font-size: 14px;
+  font-size: var(--ec-codeFontSize);
+  --ec-codeFontSize: calc(var(--paper-type-size) * 0.823529);
 }
 .paper .expressive-code .frame {
   box-shadow: none;
@@ -368,16 +380,17 @@ article.paper {
 }
 article.paper-editorial {
   --paper-width: 980px;
+  --paper-type-size: 1.0625rem;
 }
 .paper-editorial .article-heading {
-  padding-bottom: 26px;
-  margin-bottom: 28px;
+  padding-bottom: 1.53em;
+  margin-bottom: 1.65em;
   border-bottom: 1px solid #c9c7bb;
 }
 .paper-editorial .article-heading-split {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 48px;
+  gap: var(--paper-column-gap);
   align-items: start;
 }
 .paper-editorial .article-heading h1 {
@@ -387,10 +400,10 @@ article.paper-editorial {
   text-wrap: balance;
 }
 .paper-editorial .article-byline {
-  font-size: 15px;
+  font-size: 0.882353em;
 }
 .paper-editorial .article-byline time {
-  font-size: 14px;
+  font-size: 0.933333em;
 }
 .paper-editorial .article-summary {
   min-width: 0;
@@ -401,25 +414,25 @@ article.paper-editorial {
   padding: 0;
   border: 0;
   color: #343432;
-  font-size: 16px;
+  font-size: 0.941176em;
   font-weight: 400;
   line-height: 1.55;
 }
 .paper-editorial .article-prose {
-  font-size: 17px;
+  font-size: 1em;
   line-height: 1.5;
 }
 .paper-editorial .article-prose h2 {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  font-size: 21px;
-  margin: 28px 0 14px;
+  gap: 0.48em;
+  font-size: 1.235294em;
+  margin: 1.333333em 0 0.666667em;
   padding-top: 0;
   border: 0;
 }
 .paper-editorial .article-prose h2 .section-number {
-  font-size: 44px;
+  font-size: 2.095238em;
   font-weight: 400;
   letter-spacing: -0.055em;
   line-height: 1;
@@ -429,21 +442,21 @@ article.paper-editorial {
   border: 0;
 }
 .paper-editorial .article-prose h3 {
-  font-size: 19px;
+  font-size: 1.117647em;
   break-after: avoid;
 }
 .paper-editorial .paper-columns {
   column-count: 2;
-  column-gap: 48px;
+  column-gap: var(--paper-column-gap);
   column-rule: 0;
   column-fill: balance;
-  margin: 0 0 24px;
+  margin: 0 0 1.411765em;
   orphans: 3;
   widows: 3;
 }
 .paper-editorial .paper-columns:has(> p:only-child) {
   column-count: 1;
-  max-width: calc((100% - 48px) / 2);
+  max-width: calc((100% - var(--paper-column-gap)) / 2);
 }
 .paper-editorial .paper-columns > p {
   text-align: justify;
@@ -467,92 +480,61 @@ article.paper-editorial {
   transform: none;
 }
 .paper-editorial .paper-figure {
-  margin-block: 22px;
+  margin-block: 1.294118em;
 }
 .paper-editorial .paper-columns .paper-figure {
-  margin-top: 18px;
+  margin-top: 1.058824em;
 }
 .paper-editorial .paper-figure figcaption,
 .paper-editorial .paper-table figcaption {
-  font-size: 14.5px;
+  font-size: 0.852941em;
   line-height: 1.45;
-  margin-top: 10px;
+  margin-top: 0.69em;
 }
 .paper-editorial .paper-figure-side figcaption {
   margin: 0;
-  font-size: 13px;
+  font-size: 0.764706em;
 }
 .paper .figure-grid .paper-panel .expressive-code {
-  margin-block: 14px;
-  --ec-codeFontSize: 13px;
+  margin-block: 0.823529em;
+  --ec-codeFontSize: calc(var(--paper-type-size) * 0.764706);
   --ec-codeLineHeight: 1.6;
-  --ec-codePaddingInline: 12px;
+  --ec-codePaddingInline: 0.923077em;
 }
 .paper-editorial .paper-table {
   max-width: 680px;
-  margin: 26px auto;
+  margin: 1.529412em auto;
 }
 .paper-editorial .paper-table figcaption {
-  margin: 0 0 10px;
+  margin: 0 0 0.69em;
 }
 .paper-editorial .article-prose table {
-  font-size: 16px;
-}
-.paper-editorial .article-prose .footnotes {
-  margin-top: 32px;
-  font-size: 14px;
+  font-size: 0.941176em;
 }
 .paper-editorial + .article-bottom {
   max-width: 980px;
   margin-top: 32px;
 }
-@media (max-width: 939px) {
-  article.paper-editorial {
-    --paper-width: 740px;
-  }
-  .paper-editorial .article-heading-split {
-    grid-template-columns: 1fr;
-    gap: 22px;
-  }
-  .paper-editorial .paper-columns {
-    column-count: 1;
-    column-rule: 0;
-  }
-  .paper-editorial .paper-columns:has(> p:only-child) {
-    max-width: none;
-  }
-  .paper-editorial .paper-columns > p {
-    text-align: left;
-    hyphens: none;
-    -webkit-hyphens: none;
-  }
-  .paper-editorial .figure-grid {
-    grid-template-columns: 1fr;
-  }
-  .paper-editorial + .article-bottom {
-    max-width: 740px;
-  }
-}
 .paper .article-prose .footnotes {
   margin-top: 3em;
   border-top: 1px solid #c7c7bd;
   padding-top: 1.2em;
-  font-size: 16px;
+  font-size: 0.8em;
 }
 .paper .article-prose .footnotes h2 {
-  font-size: 20px;
+  font-size: 1.25em;
   margin-top: 0;
 }
 .paper-editorial .article-prose .footnotes {
-  font-size: 13.5px;
-  margin-top: 24px;
-  padding-top: 14px;
+  font-size: 0.794118em;
+  margin-top: 1.777778em;
+  padding-top: 1.037037em;
 }
 .paper-editorial .article-prose .footnotes h2 {
-  margin-bottom: 8px;
+  margin-bottom: 0.470588em;
   padding-top: 0;
   border: 0;
-  font-size: 17px;
+  font-size: 1.259259em;
 }
 .paper-editorial .article-prose .footnotes ol {
   margin-block: 8px 0;
@@ -566,113 +548,66 @@ article.paper-editorial {
 .article-bottom {
   max-width: 740px;
 }
-@media (max-width: 1050px) {
+/* Scale against the sheet width, with rem floors that respect text preferences. */
+@supports (width: 1cqw) {
   article.paper {
-    --paper-gutter: 64px;
+    --paper-type-size: clamp(1.125rem, calc(0.8125rem + 0.945946cqw), 1.25rem);
+    --paper-padding-inline: clamp(0.9375rem, 7.297297cqw, 3.375rem);
+    --paper-padding-block: clamp(1.75rem, 6.486486cqw, 3rem);
+    --paper-column-gap: clamp(1.5rem, 4.897959cqw, 3rem);
+    --paper-panel-gap: clamp(1rem, 2.857143cqw, 1.75rem);
+    --paper-detail-gap: clamp(0.875rem, 2.44898cqw, 1.5rem);
+  }
+  article.paper-editorial {
+    --paper-type-size: clamp(1rem, calc(0.75rem + 0.510204cqw), 1.0625rem);
+    --paper-padding-inline: clamp(0.9375rem, 5.510204cqw, 3.375rem);
+    --paper-padding-block: clamp(1.75rem, 4.897959cqw, 3rem);
+  }
+  .paper .article-heading h1 {
+    font-size: clamp(2.125rem, 6.486486cqw, 3rem);
+  }
+  .paper-editorial .article-heading h1 {
+    font-size: clamp(2rem, 4.081633cqw, 2.5rem);
   }
 }
-@media (max-width: 760px) {
+.paper .figure-grid-lead {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--paper-detail-gap);
+}
+/* Keep the composition above phone widths; never shrink two columns indefinitely. */
+@media (max-width: 43.749rem) {
   article.paper {
-    --paper-gutter: 40px;
-  }
-  .paper .paper-sheets {
-    gap: 24px;
+    --paper-type-size: 1.125rem;
+    --paper-padding-inline: 0.9375rem;
+    --paper-padding-block: 1.75rem;
   }
   .paper .paper-page {
     min-height: 0;
-    padding: 28px 15px 22px;
   }
-  .paper .article-topline {
-    margin-bottom: 28px;
-  }
-  .paper .article-heading h1 {
-    font-size: 36px;
-  }
-  .paper .article-prose {
-    font-size: 18px;
-    line-height: 1.65;
-  }
-  .paper .article-description {
-    font-size: 19px;
-  }
-  .paper .article-abstract {
-    font-size: 17px;
-  }
-  .paper .article-prose h2 {
-    font-size: 24px;
-  }
-  .paper .article-prose h3 {
-    font-size: 20px;
-  }
-  .paper .article-prose table {
-    font-size: 16px;
-  }
-}
-@media (max-width: 600px) {
+  .paper-editorial .article-heading-split,
+  .paper .paper-figure-side,
   .paper .figure-grid {
     grid-template-columns: 1fr;
-    gap: 30px;
-  }
-}
-@media (min-width: 700px) {
-  .paper .figure-grid-lead {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    gap: 24px;
-  }
-}
-@media (max-width: 699px) {
-  .paper .paper-figure-side {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  .paper .paper-figure-side figcaption {
-    font-size: 14.5px;
-  }
-  .paper .figure-grid {
-    grid-template-columns: 1fr;
-  }
-}
-@media (min-width: 700px) and (max-width: 939px) {
-  .paper .paper-page {
-    min-height: min(
-      calc(var(--paper-width) * 1.4143),
-      calc((100vw - var(--paper-gutter)) * 1.4143)
-    );
-    padding: 32px 32px 24px;
-  }
-  .paper-editorial .article-heading-split {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 32px;
-  }
-  .paper-editorial .article-heading h1 {
-    font-size: 32px;
-  }
-  .paper-editorial .article-abstract,
-  .paper-editorial .article-description {
-    font-size: 15px;
-  }
-  .paper-editorial .article-prose {
-    font-size: 16px;
-    line-height: 1.5;
   }
   .paper-editorial .paper-columns {
-    column-count: 2;
-    column-gap: 32px;
+    column-count: 1;
   }
   .paper-editorial .paper-columns:has(> p:only-child) {
-    column-count: 1;
-    max-width: calc((100% - 32px) / 2);
+    max-width: none;
   }
   .paper-editorial .paper-columns > p {
-    text-align: justify;
-    hyphens: auto;
-    -webkit-hyphens: auto;
+    text-align: left;
+    hyphens: none;
+    -webkit-hyphens: none;
   }
-  .paper-editorial .figure-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .paper .paper-figure-side {
+    gap: 0.625rem;
   }
-  .paper-editorial .figure-grid-lead {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  .paper .paper-figure-side figcaption {
+    font-size: 0.85em;
+  }
+  .paper .article-prose .katex-display > .katex {
+    font-size: 1em;
   }
 }
 @media print {
@@ -683,8 +618,16 @@ article.paper-editorial {
   @page {
     margin: 18mm;
   }
+  body:has(.paper) .site-shell {
+    width: 100%;
+  }
   article.paper {
     max-width: none;
+    container-type: normal;
+    --paper-type-size: 11pt;
+    --paper-column-gap: 8mm;
+    --paper-panel-gap: 6mm;
+    --paper-detail-gap: 5mm;
     color: #000;
   }
   .paper .paper-sheets {
@@ -696,6 +639,7 @@ article.paper-editorial {
     padding: 0;
     border: 0;
     box-shadow: none;
+    font-size: 11pt;
   }
   .paper .paper-page + .paper-page {
     break-before: page;

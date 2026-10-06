@@ -74,9 +74,9 @@ const widths =
             sizes ??
             (wide
               ? captionPosition === "side"
-                ? "(min-width: 1080px) 635px, (min-width: 940px) calc((100vw - 230px) * 3 / 4), (min-width: 761px) min(488px, calc((100vw - 154px) * 3 / 4)), (min-width: 700px) calc((100vw - 130px) * 3 / 4), calc(100vw - 72px)"
-                : `(min-width: 1080px) ${maxWidth ?? 870}px, (min-width: 940px) min(${maxWidth ?? 870}px, calc(100vw - 206px)), (min-width: 761px) min(${maxWidth ?? 674}px, calc(100vw - 130px)), (min-width: 700px) min(${maxWidth ?? 674}px, calc(100vw - 106px)), calc(100vw - 72px)`
-              : "(min-width: 1080px) 411px, (min-width: 940px) calc((100vw - 254px) / 2), (min-width: 761px) calc((100vw - 162px) / 2), (min-width: 700px) calc((100vw - 138px) / 2), calc(100vw - 72px)")
+                ? "(min-width: 700px) min(635px, calc(58.072vw - 1.5px)), calc(100vw - clamp(40px, 8vw, 96px) - 32px)"
+                : `(min-width: 700px) min(${maxWidth ?? 870}px, calc(81.862vw - 2px)), min(${maxWidth ?? 870}px, calc(100vw - clamp(40px, 8vw, 96px) - 32px))`
+              : "(min-width: 700px) min(411px, calc(38.678vw - 1px)), calc(100vw - clamp(40px, 8vw, 96px) - 32px)")
           }
           format="webp"
           loading="lazy"
