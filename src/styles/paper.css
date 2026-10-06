@@ -49,10 +49,7 @@ article.paper {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  min-height: min(
-    calc(var(--paper-width) * 1.4143),
-    calc((100vw - var(--paper-gutter)) * 1.4143)
-  );
+  min-height: 0;
   padding: var(--paper-padding-block) var(--paper-padding-inline) 1.5em;
   font-size: var(--paper-type-size);
   border: 1px solid #dedbd3;
@@ -708,9 +705,6 @@ article.paper-reading {
     --paper-type-size: 1.125rem;
     --paper-padding-inline: 0.9375rem;
     --paper-padding-block: 1.75rem;
-  }
-  .paper .paper-page {
-    min-height: 0;
   }
   .paper .paper-figure-side,
   .paper .figure-grid {
