@@ -188,10 +188,14 @@ check(
   "Paper example must use the editorial column layout.",
 );
 check(
-  (example.match(/class="paper-page"/g) || []).length === 3 &&
-    example.includes('aria-label="Page 3 of 3"') &&
+  example.includes("paper-figure-side") && example.includes("figure-grid-lead"),
+  "Paper example must demonstrate side captions and a lead figure with a smaller supporting panel.",
+);
+check(
+  (example.match(/class="paper-page"/g) || []).length === 2 &&
+    example.includes('aria-label="Page 2 of 2"') &&
     !example.includes("data-paper-break"),
-  "Paper example must have three labelled sheets with consumed page breaks.",
+  "Paper example must have two labelled sheets with consumed page breaks.",
 );
 visit(fromHtml(example), "element", (node) => {
   if (!node.properties.className?.includes("paper-columns")) return;

@@ -12,6 +12,7 @@ interface Props {
   width?: number;
   height?: number;
   sizes?: string;
+  captionPosition?: "below" | "side";
 }
 const {
   src,
@@ -24,6 +25,7 @@ const {
   width,
   height,
   sizes,
+  captionPosition = "below",
 } = Astro.props;
 if (typeof src === "string" && (!width || !height)) {
   throw new Error(`Figure ${id}: provide width and height for an image URL.`);
@@ -39,7 +41,10 @@ const widths =
 
 <figure
   id={id}
-  class:list={["paper-figure", { "paper-wide": wide }]}
+  class:list={[
+    "paper-figure",
+    { "paper-wide": wide, "paper-figure-side": captionPosition === "side" },
+  ]}
   aria-labelledby={`${id}-caption`}
   style={maxWidth ? `--figure-max-width: ${maxWidth}px` : undefined}
 >
@@ -68,7 +73,9 @@ const widths =
           sizes={
             sizes ??
             (wide
-              ? `(min-width: 1080px) ${maxWidth ?? 870}px, (min-width: 940px) min(${maxWidth ?? 870}px, calc(100vw - 206px)), (min-width: 761px) min(${maxWidth ?? 674}px, calc(100vw - 130px)), (min-width: 700px) min(${maxWidth ?? 674}px, calc(100vw - 106px)), calc(100vw - 72px)`
+              ? captionPosition === "side"
+                ? "(min-width: 1080px) 635px, (min-width: 940px) calc((100vw - 230px) * 3 / 4), (min-width: 761px) min(488px, calc((100vw - 154px) * 3 / 4)), (min-width: 700px) calc((100vw - 130px) * 3 / 4), calc(100vw - 72px)"
+                : `(min-width: 1080px) ${maxWidth ?? 870}px, (min-width: 940px) min(${maxWidth ?? 870}px, calc(100vw - 206px)), (min-width: 761px) min(${maxWidth ?? 674}px, calc(100vw - 130px)), (min-width: 700px) min(${maxWidth ?? 674}px, calc(100vw - 106px)), calc(100vw - 72px)`
               : "(min-width: 1080px) 411px, (min-width: 940px) calc((100vw - 254px) / 2), (min-width: 761px) calc((100vw - 162px) / 2), (min-width: 700px) calc((100vw - 138px) / 2), calc(100vw - 72px)")
           }
           format="webp"

@@ -1,8 +1,16 @@
 ---
 interface Props {
   wide?: boolean;
+  layout?: "equal" | "lead";
 }
-const { wide = true } = Astro.props;
+const { wide = true, layout = "equal" } = Astro.props;
 ---
 
-<div class:list={["figure-grid", { "paper-wide": wide }]}><slot /></div>
+<div
+  class:list={[
+    "figure-grid",
+    { "paper-wide": wide, "figure-grid-lead": layout === "lead" },
+  ]}
+>
+  <slot />
+</div>

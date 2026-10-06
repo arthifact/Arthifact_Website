@@ -123,3 +123,21 @@ test("long unsectioned writing reads in successive column pairs without duplicat
     Array.from({ length: 12 }, (_, index) => `p${index}`),
   );
 });
+
+test("composed panels retain native headings, table labels, and their reading order", () => {
+  const result = formatPaper(
+    '<h2 id="results">Results</h2><div class="figure-grid paper-wide"><section><h2 id="code">Code</h2><pre><code>x = 1</code></pre></section><section><figure><figcaption id="errors-caption">Errors</figcaption><table><thead><tr><th>Error</th></tr></thead></table></figure><h2 id="writing">Writing</h2></section></div>',
+    true,
+    2,
+  );
+  assert.match(result, /1\. <\/span>Results/);
+  assert.match(result, /2\. <\/span>Code/);
+  assert.match(result, /3\. <\/span>Writing/);
+  assert.match(result, /aria-labelledby="errors-caption"/);
+  assert.match(result, /scope="col"/);
+  assert(result.indexOf('id="code"') < result.indexOf('id="errors-caption"'));
+  assert(
+    result.indexOf('id="errors-caption"') < result.indexOf('id="writing"'),
+  );
+  assert.doesNotMatch(result, /paper-columns/);
+});
