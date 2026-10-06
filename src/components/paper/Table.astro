@@ -1,0 +1,15 @@
+---
+interface Props {
+  id: string;
+  caption: string;
+  number?: number;
+}
+const { id, caption, number } = Astro.props;
+---
+
+<figure class="paper-table" id={id} aria-labelledby={`${id}-caption`}>
+  <figcaption id={`${id}-caption`}>
+    {number !== undefined && <strong>Table {number}.</strong>}{" "}{caption}
+  </figcaption>
+  <slot />
+</figure>

@@ -1,6 +1,8 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import mathStyles from "@/styles/math.css?url";
+import paperStyles from "@/styles/paper.css?url";
+import { formatPaper } from "@/utils/paper";
 import BaseLayout from "./Base.astro";
 interface Props {
   post:
@@ -15,7 +17,18 @@ if (post.filePath?.endsWith(".md") && !post.rendered) {
     `Could not render ${post.collection}/${post.id}. Fix Markdown or LaTeX errors before building.`,
   );
 }
-const { title, description, publishDate, authors } = post.data;
+const {
+  title,
+  description,
+  publishDate,
+  authors,
+  format,
+  abstract,
+  affiliation,
+  pdf,
+  numberedSections,
+} = post.data;
+const unlisted = "unlisted" in post.data && post.data.unlisted;
 const updatedDate =
   "updatedDate" in post.data ? post.data.updatedDate : undefined;
 const ogImage = "ogImage" in post.data ? post.data.ogImage : undefined;
@@ -37,7 +50,10 @@ const backLabel =
         ? "Projects"
         : "Blog";
 const articleDate = publishDate.toISOString();
-const content = await Astro.slots.render("default");
+const content = formatPaper(
+  await Astro.slots.render("default"),
+  numberedSections,
+);
 const hasMath = /class="[^"]*\bkatex\b/.test(content);
 ---
 
@@ -47,16 +63,17 @@ const hasMath = /class="[^"]*\bkatex\b/.test(content);
     description: description ?? "",
     ogImage,
     title,
-    noindex: "unlisted" in post.data && post.data.unlisted,
+    noindex: unlisted,
   }}
 >
   <Fragment slot="head">
+    <link rel="stylesheet" href={paperStyles} data-paper-styles />
     {hasMath && <link rel="stylesheet" href={mathStyles} data-math-styles />}
   </Fragment>
   <article
-    class="paper"
-    data-pagefind-body={!("unlisted" in post.data && post.data.unlisted) ||
-      undefined}
+    class:list={["paper", { "paper-manuscript": format === "paper" }]}
+    data-pagefind-body={!unlisted || undefined}
+    data-pagefind-ignore={unlisted || undefined}
   >
     <div class="article-topline mono">
       <a href={backLink}>← {backLabel}</a>
@@ -76,7 +93,24 @@ const hasMath = /class="[^"]*\bkatex\b/.test(content);
             })
           }</time
         >
-      </p>{description && <p class="article-description">{description}</p>}{
+      </p>
+      {affiliation && <p class="article-affiliation">{affiliation}</p>}
+      {
+        pdf && (
+          <a class="paper-pdf" href={pdf}>
+            Download PDF ↓
+          </a>
+        )
+      }
+      {
+        abstract ? (
+          <p class="article-abstract">
+            <strong>Abstract.</strong> {abstract}
+          </p>
+        ) : (
+          description && <p class="article-description">{description}</p>
+        )
+      }{
         updatedDate && (
           <p class="eyebrow">
             Updated{" "}

@@ -6,11 +6,19 @@ function removeDupsAndLowerCase(array: string[]) {
   return [...new Set(array.map((str) => str.toLowerCase()))];
 }
 
-const titleSchema = z.string().max(60);
+const titleSchema = z.string().max(180);
 
 const baseSchema = z.object({
   title: titleSchema,
   authors: z.array(z.string()).min(1).default(["Gabriel I. Alonso"]),
+  format: z.enum(["article", "paper"]).default("article"),
+  abstract: z.string().optional(),
+  affiliation: z.string().optional(),
+  numberedSections: z.boolean().default(false),
+  pdf: z
+    .string()
+    .regex(/^(\/(?!\/)|https:\/\/)/, "Use a local PDF path or an HTTPS URL.")
+    .optional(),
 });
 
 const post = defineCollection({

@@ -29,7 +29,12 @@ export default defineConfig({
   integrations: [
     expressiveCode(expressiveCodeOptions),
     icon(),
-    sitemap({ filter: (page) => !page.includes("/posts/markdown-elements/") }),
+    sitemap({
+      filter: (page) =>
+        !["/posts/markdown-elements/", "/posts/paper-example/"].some((sample) =>
+          page.includes(sample),
+        ),
+    }),
     mdx(),
     robotsTxt(),
   ],

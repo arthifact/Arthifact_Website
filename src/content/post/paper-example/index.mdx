@@ -1,0 +1,130 @@
+---
+title: "Recovering a sampled signal"
+description: "A paper layout example with equations, scientific figures, a table, and code."
+publishDate: "2026-10-06"
+format: paper
+numberedSections: true
+unlisted: true
+abstract: "How much of a signal can we recover from a few noisy measurements? This example uses a Fourier basis and a smoothness penalty to reconstruct a synthetic signal from 24 samples. It shows how text, equations, figures, tables, and code fit together in a single reading column. The data and results are illustrative, and the figure generation script is included."
+---
+
+import Figure from "@/components/paper/Figure.astro";
+import FigureGrid from "@/components/paper/FigureGrid.astro";
+import Table from "@/components/paper/Table.astro";
+import samplingMatrix from "./sampling-matrix.png";
+import results from "./results.json";
+
+## Introduction
+
+A measurement gives us part of the picture. Reconstructing the signal between measurements requires a model and a choice about what to keep. Here, we use a small inverse problem to make that choice visible.
+
+The known signal is sampled at 24 positions in $[0,1]$. We add Gaussian noise with standard deviation $0.12$ and fit a Fourier series. With enough coefficients, the fit can follow the measurements closely and still miss the underlying shape.
+
+<Figure
+  id="fig-reconstruction"
+  number={1}
+  wide
+  src="/images/paper-example/reconstruction.svg"
+  width={1040}
+  height={410}
+  alt="A blue regularized curve follows the gray dashed known signal, passing near 24 orange outlined noisy sample points."
+>
+  **Reconstruction from noisy samples.** The blue curve retains the broad shape of the known signal while smoothing the noisy measurements. Differences remain in regions with few samples.
+</Figure>
+
+## Method
+
+Write the signal as a weighted sum of basis functions, $f(x)=\sum_{j=0}^{20}c_j\phi_j(x)$. The constant term and ten sine–cosine pairs give us 21 coefficients. The sampling matrix $A$ evaluates each basis function at a measured position.
+
+<div id="eq-observations" />
+
+$$
+\mathbf y = A\mathbf c + \boldsymbol\varepsilon,
+\qquad \boldsymbol\varepsilon\sim\mathcal N(0,\sigma^2 I).
+\tag{1}
+$$
+
+We recover the coefficients by balancing the data fit with a penalty on high frequencies:
+
+<div id="eq-objective" />
+
+$$
+\widehat{\mathbf c}
+= \underset{\mathbf c}{\operatorname{argmin}}\;
+\left\lVert A\mathbf c-\mathbf y\right\rVert_2^2
++\lambda\,\mathbf c^{\mathsf T}R\mathbf c.
+\tag{2}
+$$
+
+The diagonal entries of $R$ are $k^4$ for frequency $k$; the constant term is unpenalized. Higher frequencies therefore cost more. For $\lambda>0$, the solution satisfies
+
+$$
+\left(A^{\mathsf T}A+\lambda R\right)\widehat{\mathbf c}
+=A^{\mathsf T}\mathbf y.
+\tag{3}
+$$
+
+The parameter $\lambda$ controls the tradeoff. Too little regularization leaves large oscillations. Too much removes useful detail. [Equation (2)](#eq-objective) and [Figure 1](#fig-reconstruction) describe the same choice in two ways.
+
+## Results
+
+The regularized reconstruction in Figure 1 has a root mean square error of $0.2265$, compared with $1.3724$ for the unregularized fit. These errors are evaluated against the known signal on a dense grid, rather than at the noisy sample positions.[^evaluation]
+
+<FigureGrid wide>
+  <Figure
+    id="fig-matrix"
+    number={2}
+    src={samplingMatrix}
+    sizes="(min-width: 1150px) 506px, (min-width: 761px) calc((100vw - 124px) / 2), (min-width: 601px) calc((100vw - 68px) / 2), calc(100vw - 40px)"
+    alt="A red and blue heat map of the 24 by 21 sampling matrix. Each row is a sample position and each column is a Fourier basis coefficient."
+    caption="The sampling matrix. Each row evaluates the 21 basis functions at one measurement position."
+  />
+  <Figure
+    id="fig-regularization"
+    number={3}
+    src="/images/paper-example/regularization.svg"
+    width={500}
+    height={360}
+    alt="Reconstruction error decreases as regularization increases, reaches a minimum, then rises. An orange dashed line marks the illustrated regularization strength of ten to the minus four."
+    caption="Error across regularization strengths. The dashed line marks the fit shown in Figure 1; it is an illustrative choice, rather than the minimum of this curve."
+  />
+</FigureGrid>
+
+<Table id="table-errors" number={1} caption="Reconstruction error for the same 24 measurements. Lower values indicate a closer fit to the known signal.">
+  <table>
+    <thead><tr><th>Regularization, λ</th><th style={{textAlign: "right"}}>RMSE</th></tr></thead>
+    <tbody>
+      {results.results.map((row) => <tr><td>{row.lambda === 0 ? "0 (unregularized)" : row.lambda.toFixed(5)}</td><td style={{textAlign: "right"}}>{row.rmse.toFixed(4)}</td></tr>)}
+    </tbody>
+  </table>
+</Table>
+
+## Code
+
+The reconstruction is a small linear solve. Use least squares for the unregularized case and solve the penalized system when $\lambda>0$.
+
+```python
+import numpy as np
+
+def reconstruct(A, B, samples, frequencies, strength):
+    weights = np.r_[0, frequencies**4, frequencies**4]
+    penalty = np.diag(weights)
+
+    if strength == 0:
+        coefficients = np.linalg.lstsq(A, samples, rcond=None)[0]
+    else:
+        system = A.T @ A + strength * penalty
+        coefficients = np.linalg.solve(system, A.T @ samples)
+
+    return B @ coefficients
+```
+
+The [figure generation script](https://github.com/arthifact/Arthifact_Website/blob/main/scripts/generate-paper-example.py) contains the signal, samples, plots, and table values. It uses a fixed random seed so the example can be reproduced.
+
+## Writing a paper
+
+Write the body in Markdown. Add LaTeX math with `$...$` and `$$...$$`. Use MDX when you want captioned figures, paired panels, or tables with more control. The same layout works for research, projects, and blog posts.
+
+Start from the [paper template](https://github.com/arthifact/Arthifact_Website/blob/main/examples/paper.mdx). Set the title, authors, abstract, and date, then write. A `pdf` field adds a download link to an existing paper. Equations and formatting are prepared during the site build; the reader can view the article with JavaScript disabled.
+
+[^evaluation]: The known signal is available because this is a synthetic example. In an actual inverse problem, evaluation requires independent evidence or held out measurements.

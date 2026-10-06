@@ -1,0 +1,8 @@
+---
+interface Props {
+  wide?: boolean;
+}
+const { wide = false } = Astro.props;
+---
+
+<div class:list={["figure-grid", { "paper-wide": wide }]}><slot /></div>

@@ -1,0 +1,65 @@
+---
+title: "Paper title"
+description: "A short summary of the work."
+publishDate: "2026-10-06"
+format: paper
+numberedSections: true
+abstract: "State the question, method, and main result in one paragraph."
+authors: ["Gabriel I. Alonso"]
+# affiliation: "Your institution"
+# pdf: "/files/your-paper.pdf"
+unlisted: true
+---
+
+import Figure from "@/components/paper/Figure.astro";
+import FigureGrid from "@/components/paper/FigureGrid.astro";
+import Table from "@/components/paper/Table.astro";
+
+{/* Copy into src/content/post/your-slug/index.mdx, then replace this text and example figure. For a project, use src/content/projects/your-slug/index.mdx and add kind: research (or project/art). */}
+
+## Introduction
+
+Explain the question and why it matters. Inline math uses $d(x,y)=\lVert x-y\rVert_2$.
+
+## Method
+
+Explain what you did. Give important equations a number and a nearby anchor:
+
+<div id="eq-energy" />
+
+$$
+E(X)=\sum_{i=1}^{n}\lVert x_i-y_i\rVert^2.
+\tag{1}
+$$
+
+Refer to [Equation (1)](#eq-energy) in the text.
+
+## Results
+
+{/* For a local raster figure, import figureImage from "./figure.png" and use src={figureImage}; Astro will generate responsive WebP images. For an SVG in public/, use its URL and include width and height. */}
+
+<Figure id="fig-result" number={1} wide src="/images/paper-example/reconstruction.svg" width={1040} height={410} alt="Replace with a description of your figure.">
+  **Replace this example figure.** Write a short caption describing the result. Images retain their proportions and open at full size when clicked.
+</Figure>
+
+{/* Put two Figure components inside <FigureGrid wide>...</FigureGrid> for paired panels. Leave wide off for figures within the text column. */}
+
+<Table id="table-results" number={1} caption="Replace these example values with your results.">
+
+| Method | Error |
+| :--- | ---: |
+| Baseline | 0.25 |
+| Proposed | 0.10 |
+
+</Table>
+
+## Code
+
+```python
+def energy(points, targets):
+    return ((points - targets) ** 2).sum()
+```
+
+## References
+
+Link to the papers, code, and data you used.

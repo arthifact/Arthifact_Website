@@ -1,0 +1,83 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  id: string;
+  caption?: string;
+  number?: number;
+  wide?: boolean;
+  width?: number;
+  height?: number;
+  sizes?: string;
+}
+const {
+  src,
+  alt,
+  id,
+  caption,
+  number,
+  wide = false,
+  width,
+  height,
+  sizes,
+} = Astro.props;
+if (typeof src === "string" && (!width || !height)) {
+  throw new Error(`Figure ${id}: provide width and height for an image URL.`);
+}
+const original = typeof src === "string" ? src : src.src;
+const widths =
+  typeof src === "string"
+    ? []
+    : [
+        ...new Set([480, 960, 1440, src.width].filter((w) => w <= src.width)),
+      ].sort((a, b) => a - b);
+---
+
+<figure
+  id={id}
+  class:list={["paper-figure", { "paper-wide": wide }]}
+  aria-labelledby={`${id}-caption`}
+>
+  <a
+    class="figure-image"
+    href={original}
+    target="_blank"
+    rel="noopener"
+    aria-label={`Open full-size figure: ${alt}`}
+  >
+    {
+      typeof src === "string" ? (
+        <img
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <Image
+          src={src}
+          alt={alt}
+          widths={widths}
+          sizes={
+            sizes ??
+            (wide
+              ? "(min-width: 1150px) 1040px, calc(100vw - 40px)"
+              : "(min-width: 800px) 740px, calc(100vw - 40px)")
+          }
+          format="webp"
+          loading="lazy"
+          decoding="async"
+        />
+      )
+    }
+  </a>
+  <figcaption id={`${id}-caption`}>
+    {number !== undefined && <strong>Figure {number}.</strong>}{" "}<slot
+      >{caption}</slot
+    >
+  </figcaption>
+</figure>

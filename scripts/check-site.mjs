@@ -62,10 +62,14 @@ for (const file of pages) {
       `${page}: equations must include MathML and hide duplicate visual markup from assistive tools`,
     );
   }
-  if (markup.includes('class="paper"')) {
+  if (/class="[^"]*\bpaper\b/.test(markup)) {
     check(
       !markup.includes("article-toc") && !markup.includes("On this page"),
       `${page}: paper layout must not include a table-of-contents sidebar`,
+    );
+    check(
+      markup.includes("data-paper-styles"),
+      `${page}: missing article typography`,
     );
   }
   for (const match of markup.matchAll(/<(a|img|link|script)\b[^>]*>/g)) {
@@ -119,6 +123,10 @@ for (const page of mainPages) {
     !/<(?:img|script)[^>]+src="https?:/.test(html),
     `${page}: core page assets must be local`,
   );
+  check(
+    !html.includes("data-paper-styles"),
+    `${page}: article fonts must not load on index pages`,
+  );
   const kb = gzipSync(html).length / 1024;
   check(
     kb < 24,
@@ -140,8 +148,70 @@ check(
   "RSS must include the writing shown in the blog.",
 );
 check(
-  !feed.includes("markdown-elements"),
-  "The template sample must stay out of RSS.",
+  !feed.includes("markdown-elements") && !feed.includes("paper-example"),
+  "The layout samples must stay out of RSS.",
+);
+const example = fs.readFileSync(
+  path.join(root, "posts/paper-example/index.html"),
+  "utf8",
+);
+check(
+  example.includes('content="noindex, follow"') &&
+    example.includes("data-pagefind-ignore"),
+  "Paper example must remain unlisted and excluded from search.",
+);
+check(
+  (example.match(/class="section-number"/g) || []).length === 5,
+  "Paper example must have five numbered sections, without numbering footnotes.",
+);
+check(
+  (example.match(/<figcaption id="(?:fig|table)-[^\"]+"/g) || []).length === 4,
+  "Paper example needs three figure captions and one table caption.",
+);
+check(
+  example.includes('aria-labelledby="table-errors-caption"') &&
+    example.includes('scope="col"'),
+  "Paper table must retain native headers and a labelled scroll region.",
+);
+check(
+  example.includes("data-math-styles") && example.includes("expressive-code"),
+  "Paper example must demonstrate math and highlighted code.",
+);
+check(
+  example.includes("srcset=") && example.includes("paper-wide"),
+  "Paper example must demonstrate responsive images and wide figures.",
+);
+const paperCssHref = example.match(
+  /<link[^>]+href="([^"]+)"[^>]+data-paper-styles/,
+)?.[1];
+const paperCssPath =
+  paperCssHref &&
+  resolveTarget(paperCssHref, path.join(root, "posts/paper-example/index.html"))
+    ?.file;
+check(!!paperCssPath, "Article typography stylesheet must be local.");
+if (paperCssPath) {
+  const css = fs.readFileSync(paperCssPath, "utf8");
+  check(
+    css.includes("STIX Two Text") && css.includes("font-display:swap"),
+    "Article serif fonts must load with font swapping.",
+  );
+  for (const match of css.matchAll(/url\((?:["']?)([^)"']+)(?:["']?)\)/g)) {
+    check(
+      !!resolveTarget(match[1], paperCssPath)?.file,
+      `Missing article font: ${match[1]}`,
+    );
+  }
+}
+const sitemap = fs.readFileSync(path.join(root, "sitemap-0.xml"), "utf8");
+check(
+  !sitemap.includes("paper-example"),
+  "Paper example must stay out of the sitemap.",
+);
+check(
+  fs
+    .readFileSync(path.join(root, "blog/index.html"), "utf8")
+    .includes("/posts/paper-example/"),
+  "Blog must link directly to the paper example.",
 );
 check(
   fs.existsSync(path.join(root, "files/Gabriel_Isaac_Alonso_Serrato_CV.pdf")),

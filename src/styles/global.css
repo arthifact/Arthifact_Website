@@ -362,6 +362,12 @@
 .index-topline a:hover {
   text-decoration: underline;
 }
+.index-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: 8px 24px;
+}
 .work-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

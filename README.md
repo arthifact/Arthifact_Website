@@ -10,12 +10,13 @@ Use Node 22.18 or newer and npm. The committed lockfile is the source of truth.
 npm ci
 npm run dev
 npm run check
+npm run test:paper
 npm run build
 npm run verify:site
 npm run preview
 ```
 
-`npm run build` also builds the Pagefind index and verifies the generated site. The homepage uses one small inline script to choose a Ponyo still; navigation and content also work with JavaScript disabled. The other core pages ship no client JavaScript. All pages use system fonts; there are no external font requests or video players on initial load. The interactive Earth model loads its third-party viewer only after the reader requests it.
+`npm run build` also builds the Pagefind index and verifies the generated site. The homepage uses one small inline script to choose a Ponyo still; navigation and content also work with JavaScript disabled. The other core pages ship no client JavaScript. Index pages use system fonts; articles use locally hosted STIX Two Text. There are no external font requests or video players on initial load. The interactive Earth model loads its third-party viewer only after the reader requests it.
 
 The verification command checks every built page for broken local links and anchors, image dimensions, a main heading, the CV, RSS content, and a 24 KiB gzipped HTML budget for the core pages. Gallery checks also exercise all 50 choices, repeat avoidance, unavailable session storage, and fallback behavior. GitHub Actions runs type checks, the production build, and verification on pull requests.
 
@@ -46,11 +47,30 @@ coverImage:
 
 Add Markdown posts in `src/content/post/` with `title`, `description`, and `publishDate`; optional fields include `tags`, `coverImage`, and `draft`. Notes live in `src/content/note/`. The Blog and main RSS feed collect published posts, research essays, and notes. A post marked `unlisted: true` keeps its URL but stays out of the blog and feed and receives `noindex` metadata. The original Markdown demo is preserved this way.
 
-Research writeups, projects, art, posts, and notes share one paper layout: a centered 720px reading column, serif type, title, author, date, summary, and text. There is no contents sidebar or automatic cover banner. Covers remain thumbnails on index pages; insert article figures in the Markdown where they belong. Normal headings, lists, links, tables, and footnotes work. Print styles remove navigation and use a white background.
+See the live [paper example](https://arthifact.com/posts/paper-example/), also linked at the top of Blog. It uses synthetic data to demonstrate the layout; it is unlisted, excluded from search and RSS, and is not a research entry. The optional figure generation script uses Python, NumPy, and Matplotlib; these are not site build dependencies.
 
-Start from `examples/paper.md`, which is outside the published content folders. Copy it into `src/content/post/<slug>/index.md`, set the title, summary, and date, and write the body. Remove `unlisted: true` when you want it in the blog and RSS. For a project, put it in `src/content/projects/<slug>/index.md` with `kind: research`, `project`, or `art` instead. Authors default to Gabriel I. Alonso; add an `authors` array for coauthors.
+Research writeups, projects, art, posts, and notes share a 740px reading column with STIX Two Text, bold serif headings, restrained spacing, and a white background. Figures may span up to 1040px; paired panels stack on phones. There is no contents sidebar or automatic cover banner. Covers remain thumbnails on index pages; insert article figures where they belong. Print styles remove navigation and use compact manuscript typography.
 
-LaTeX equations work in both `.md` and `.mdx`: use `$x^2$` inline or `$$` on separate lines around a display equation. KaTeX renders the equations to HTML and MathML during the build, so the reader needs no math JavaScript. Math styles and fonts are served locally and linked only on articles containing equations, with font swapping enabled. Wide display equations scroll within the reading column and can be focused with the keyboard. Unsupported or invalid equations fail the build; use [KaTeX’s supported commands](https://katex.org/docs/supported). This is a web writing format with LaTeX math, not a compiler for entire `.tex` documents.
+Start from `examples/paper.md` for plain text, math, and tables, or `examples/paper.mdx` for captioned figures and paired panels. Copy it into `src/content/post/<slug>/index.md` (or `.mdx`), set the title, summary, and date, and write the body. Remove `unlisted: true` when you want it in the blog and RSS. For a project, use `src/content/projects/<slug>/index.mdx` with `kind: research`, `project`, or `art`. Authors default to Gabriel I. Alonso; add an `authors` array for coauthors.
+
+Optional frontmatter:
+
+```yaml
+format: paper
+abstract: "The question, method, and main result in one paragraph."
+numberedSections: true
+authors: ["Gabriel I. Alonso", "Coauthor"]
+affiliation: "Your institution"
+pdf: "/files/your-paper.pdf"
+```
+
+`abstract` replaces the description under the author line with a bold manuscript abstract. `numberedSections` numbers level-two headings while preserving their anchors; footnotes are not numbered as a section. `pdf` adds a download link: place a PDF in `public/files/` or use an HTTPS URL. Existing PDF papers can accompany the readable HTML article.
+
+In MDX, import `Figure`, `FigureGrid`, and `Table` from `@/components/paper/`. For a local raster image, import it from the article folder and pass it as `src`; Astro generates responsive WebP variants. SVG plots use a local `/images/...svg` path with explicit `width` and `height`. Always supply meaningful `alt` text. `Figure` takes `id`, `number`, and either `caption` or a rich Markdown caption in its body. Set `wide` to extend beyond the reading column, and wrap two figures in `<FigureGrid wide>` for paired panels. Clicking a figure opens the original image at full size.
+
+`Table` takes `id`, `number`, and `caption`, with a Markdown or HTML table inside. Tables retain native headers and fine horizontal rules; wide tables scroll in a labelled region that readers can focus with the keyboard. Code fences are highlighted during the build. Headings, links, lists, citations as links, and Markdown footnotes work normally.
+
+LaTeX equations work in both `.md` and `.mdx`: use `$x^2$` inline or `$$` on separate lines around a display equation. Add `\tag{1}` inside an equation for a number. Put `<div id="eq-energy" />` before an MDX equation and link to it with `[Equation (1)](#eq-energy)` for a cross-reference. KaTeX renders HTML and MathML during the build, so the reader needs no math JavaScript. Math styles and fonts are local and linked only on articles containing equations, with font swapping enabled. Wide display equations scroll within the reading column and can be focused with the keyboard. Unsupported or invalid equations fail the build; use [KaTeX’s supported commands](https://katex.org/docs/supported). Write web articles in Markdown/MDX with LaTeX math; attach complete `.tex` manuscripts as compiled PDFs.
 
 ## Update identity and design
 
@@ -58,7 +78,7 @@ LaTeX equations work in both `.md` and `.mdx`: use `$x^2$` inline or `$$` on sep
 - Homepage role and email: `src/pages/index.astro`.
 - Biography and contact links: `src/pages/about.astro`.
 - CV: replace `public/files/Gabriel_Isaac_Alonso_Serrato_CV.pdf` when needed.
-- Typography, spacing, mobile layout, and print styles: `src/styles/global.css`.
+- Site design: `src/styles/global.css`. Article typography, figures, tables, mobile layout, and print styles: `src/styles/paper.css`.
 - Sea artwork: `src/components/OceanStill.astro` and `src/assets/ponyo/`. All 50 stills are local, optimized WebP files. A small inline script picks one per homepage load, avoiding the previous frame in the same tab when session storage is available. Only the chosen image is requested; frame 050 is the no-JavaScript and image-error fallback. Image descriptions live in `src/data/ponyo.ts`.
 - Torus logo and SVG favicon: `public/logo.svg`, used in the header through `src/components/Logo.astro`. The homepage header shows only the logo; the full name appears once in the introduction. Other pages retain the logo and short name in the header. Regenerate the projected torus mesh and matching `public/icons/apple-touch-icon.png` with `node scripts/generate-logo.mjs`.
 - Social preview: `public/social-card.png`.
@@ -72,3 +92,5 @@ The 50 homepage stills are from [Ponyo (2008), Studio Ghibli’s official galler
 GitHub Pages deploys pushes to `main` through `.github/workflows/deploy.yml`. The custom domain and `CNAME` remain configured. Review a redesign pull request before merging; merging publishes the changes through the existing workflow.
 
 Built from the Astro Cactus foundation. See [LICENSE](LICENSE).
+
+The locally hosted [STIX Two Text](https://fontsource.org/fonts/stix-two-text) font is by the STIX Fonts Project Authors and is distributed under the SIL Open Font License 1.1, included in the installed `@fontsource/stix-two-text` package.
