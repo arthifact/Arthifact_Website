@@ -16,6 +16,7 @@ import Figure from "@/components/paper/Figure.astro";
 import FigureGrid from "@/components/paper/FigureGrid.astro";
 import Table from "@/components/paper/Table.astro";
 import PageBreak from "@/components/paper/PageBreak.astro";
+import Block from "@/components/paper/Block.astro";
 
 {/* Copy into src/content/post/your-slug/index.mdx, then replace this text and example figure. For a project, use src/content/projects/your-slug/index.mdx and add kind: research (or project/art). */}
 
@@ -44,7 +45,7 @@ Refer to [Equation (1)](#eq-energy) in the text.
   **Replace this example figure.** Write a short caption describing the result. Images retain their proportions and open at full size when clicked.
 </Figure>
 
-{/* Text flows down the left column and continues from the top of the right. Place wide figures above or below a page's text, or use wide={false} for a figure inside one column. Use captionPosition="side" for a caption beside the image. Put two Figure components inside <FigureGrid>...</FigureGrid> for equal panels, or <FigureGrid layout="lead">...</FigureGrid> for a large image and a smaller supporting panel. Use maxWidth={640} to center a smaller figure without changing its proportions. */}
+{/* Figures and tables use one column by default. Add wide for both columns; wide blocks float to the top of their authored sheet, or to its bottom with placement="bottom". The rest of the text forms one continuous left-to-right flow. Use FigureGrid for two equal-width image panels. Each caption stays with its image, which keeps its proportions. Use maxWidth={640} to center a smaller wide figure. */}
 
 {/* Most short pieces can stay on one sheet. Insert <PageBreak /> on its own line between sections when you want another sheet. */}
 
@@ -57,12 +58,18 @@ Refer to [Equation (1)](#eq-energy) in the text.
 
 </Table>
 
+<Block>
+
 ## Code
 
 ```python
 def energy(points, targets):
     return ((points - targets) ** 2).sum()
 ```
+
+</Block>
+
+{/* Block keeps a short heading, introduction, and listing together in one column. For a long listing or equation that needs both columns, put only that block inside <Block wide>...</Block>. Use aligned or split in LaTeX math to break long equations; avoid shrinking them until unreadable. */}
 
 ## References
 

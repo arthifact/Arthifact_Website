@@ -1,0 +1,14 @@
+---
+interface Props {
+  wide?: boolean;
+  placement?: "top" | "bottom";
+}
+const { wide = false, placement = "top" } = Astro.props;
+---
+
+<div
+  class:list={["paper-block", { "paper-wide": wide }]}
+  data-paper-placement={wide ? placement : undefined}
+>
+  <slot />
+</div>

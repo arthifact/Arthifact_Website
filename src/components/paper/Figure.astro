@@ -8,6 +8,7 @@ interface Props {
   caption?: string;
   number?: number;
   wide?: boolean;
+  placement?: "top" | "bottom";
   maxWidth?: number;
   width?: number;
   height?: number;
@@ -20,7 +21,8 @@ const {
   id,
   caption,
   number,
-  wide = true,
+  wide = false,
+  placement = "top",
   maxWidth,
   width,
   height,
@@ -46,6 +48,7 @@ const widths =
     { "paper-wide": wide, "paper-figure-side": captionPosition === "side" },
   ]}
   aria-labelledby={`${id}-caption`}
+  data-paper-placement={wide ? placement : undefined}
   style={maxWidth ? `--figure-max-width: ${maxWidth}px` : undefined}
 >
   <a

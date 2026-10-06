@@ -190,8 +190,13 @@ check(
 );
 check(
   !example.includes("paper-figure-side") &&
-    example.includes("figure-grid-lead"),
-  "Paper example must keep captions below figures and retain the paired image composition.",
+    example.includes("figure-grid") &&
+    !example.includes("figure-grid-lead"),
+  "Paper example must keep captions below equal-width image panels.",
+);
+check(
+  example.includes('class="paper-block"'),
+  "Paper example must keep the code section together in one column.",
 );
 check(
   (example.match(/class="paper-page"/g) || []).length === 2 &&
@@ -236,7 +241,7 @@ visit(fromHtml(example), "element", (node) => {
 });
 check(
   exampleHeadings.join(",") ===
-    "introduction,method,results,code,writing-a-paper,footnote-label" &&
+    "introduction,method,results,writing-a-paper,code,footnote-label" &&
     example.indexOf('id="table-errors"') < example.indexOf('id="code"'),
   "The example must preserve the authored section order and place the results table before code.",
 );

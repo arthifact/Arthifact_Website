@@ -220,18 +220,28 @@ article.paper {
   margin-block: 2em;
 }
 .paper .article-prose img {
+  display: block;
+  max-width: 100%;
   height: auto;
   margin: 1.5em auto;
+}
+.paper .article-prose :is(picture, video, iframe) {
+  max-width: 100%;
 }
 .paper .paper-wide {
   width: 100%;
   max-width: none;
 }
 .paper .paper-figure {
+  min-width: 0;
+  max-width: 100%;
+  break-inside: avoid;
   margin-block: 1.8em;
 }
 .paper .figure-image {
   display: block;
+  min-width: 0;
+  max-width: 100%;
   text-decoration: none;
 }
 .paper .paper-figure img {
@@ -297,6 +307,9 @@ article.paper {
   margin-bottom: 0;
 }
 .paper .paper-table {
+  min-width: 0;
+  max-width: 100%;
+  break-inside: avoid;
   margin-block: 1.8em;
 }
 .paper .paper-table figcaption {
@@ -374,6 +387,13 @@ article.paper {
 }
 .paper .expressive-code pre {
   border-radius: 0;
+}
+.paper .article-prose .expressive-code pre.wrap > code {
+  min-width: 0;
+}
+.paper .article-prose .expressive-code pre.wrap .ec-line .code {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .paper .article-prose .katex-display {
   margin-block: 1.3em;
@@ -456,6 +476,37 @@ article.paper-editorial {
   orphans: 3;
   widows: 3;
 }
+.paper-editorial .paper-columns > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.paper .paper-block {
+  min-width: 0;
+  max-width: 100%;
+  break-inside: avoid;
+}
+.paper .paper-block > :first-child {
+  margin-top: 0;
+}
+.paper .paper-block > :last-child {
+  margin-bottom: 0;
+}
+.paper .paper-block + * {
+  margin-top: 1.4em;
+}
+.paper
+  .paper-columns
+  :is(figure, .figure-grid, .expressive-code, .paper-block) {
+  width: 100%;
+}
+.paper-columned .figure-grid:not(.figure-grid-lead) {
+  gap: var(--paper-column-gap);
+}
+.paper .paper-columns :is(figure, .expressive-code, .paper-block, p:has(img)) {
+  display: flow-root;
+  box-sizing: border-box;
+  break-inside: avoid;
+}
 .paper-editorial .paper-columns > p {
   text-align: justify;
   hyphens: auto;
@@ -489,6 +540,9 @@ article.paper-editorial {
 .paper-editorial .paper-columns blockquote,
 .paper-editorial .paper-columns .expressive-code,
 .paper-editorial .paper-columns .paper-table-scroll {
+  break-inside: avoid;
+}
+.paper .paper-columns .figure-grid {
   break-inside: avoid;
 }
 .paper-columned .paper-columns .expressive-code {
@@ -526,6 +580,9 @@ article.paper-editorial {
 .paper-editorial .paper-table {
   max-width: 680px;
   margin: 1.529412em auto;
+}
+.paper-editorial .paper-table.paper-wide {
+  max-width: none;
 }
 .paper-editorial .paper-table figcaption {
   margin: 0 0 0.69em;
@@ -675,7 +732,7 @@ article.paper-reading {
     font-size: 0.85em;
   }
   .paper .article-prose .katex-display > .katex {
-    font-size: 1em;
+    font-size: 0.9em;
   }
 }
 @media print {

@@ -111,7 +111,7 @@ test("authored sheets keep numbering and references continuous without empty pag
   assert.deepEqual(formatPaperPages(""), [""]);
 });
 
-test("figures and Markdown images span columns while retaining source order", () => {
+test("Markdown images stay in one column without restarting the text flow", () => {
   const tree = fromHtml(
     formatPaper(
       '<p>Before.</p><p><a href="/image.png"><img src="/image.png" alt="Plot" width="800" height="400"></a></p><p>After.</p>',
@@ -122,14 +122,57 @@ test("figures and Markdown images span columns while retaining source order", ()
   );
   assert.deepEqual(
     tree.children.map((node) => node.tagName),
-    ["div", "p", "div"],
+    ["div"],
   );
   assert.match(tree.children[0].children[0].children[0].value, /Before/);
-  assert.match(tree.children[2].children[0].children[0].value, /After/);
+  assert.equal(
+    tree.children[0].children[1].children[0].children[0].tagName,
+    "img",
+  );
+  assert.match(tree.children[0].children[2].children[0].value, /After/);
   assert.throws(
     () => formatPaperPages("<figure><div data-paper-break></div></figure>"),
     /outside figures/,
   );
+});
+
+test("wide figures, tables, and code float above or below one continuous column flow", () => {
+  const source =
+    '<h2 id="intro">Intro</h2><p id="a">Text before.</p><figure class="paper-figure paper-wide" id="plot">Plot</figure><p id="b">Text after.</p><figure class="paper-table paper-wide" data-paper-placement="bottom" id="table">Table</figure><div class="paper-block paper-wide" id="listing">Code</div><p id="c">Last paragraph.</p>';
+  const tree = fromHtml(formatPaper(source, true, 2), { fragment: true });
+  const elements = tree.children.filter((n) => n.type === "element");
+  assert.deepEqual(
+    elements.map((n) => n.properties.id ?? n.properties.className[0]),
+    ["plot", "listing", "paper-columns", "table"],
+  );
+  assert.deepEqual(
+    elements[2].children.map((n) => n.properties.id),
+    ["intro", "a", "b", "c"],
+  );
+  assert.equal(
+    (formatPaper(source, true, 2).match(/class="paper-columns"/g) ?? []).length,
+    1,
+  );
+  assert(
+    formatPaper(source, true, 1).indexOf('id="intro"') <
+      formatPaper(source, true, 1).indexOf('id="plot"'),
+  );
+});
+
+test("a kept block preserves its heading, listing, links, and accessible math together", () => {
+  const result = formatPaper(
+    '<p>Before</p><div class="paper-block"><h2 id="code">Code</h2><p>Explanation</p><pre><code>x = 1</code></pre><span class="katex-display"><math><mi>x</mi></math></span><p><a href="#code">Code link</a></p></div><p>After</p>',
+    true,
+    2,
+  );
+  const tree = fromHtml(result, { fragment: true });
+  const block = tree.children[0].children[1];
+  assert.deepEqual(block.properties.className, ["paper-block"]);
+  assert.equal(block.children[0].properties.id, "code");
+  assert.match(result, /1\. <\/span>Code/);
+  assert.match(result, /<code>x = 1<\/code>/);
+  assert.match(result, /<math><mi>x<\/mi><\/math>/);
+  assert.match(result, /href="#code"/);
 });
 
 test("long writing does not restart the page's columns after a word threshold", () => {
@@ -173,6 +216,7 @@ test("equation links target the equation itself across column breaks", () => {
     2,
   );
   assert.match(result, /class="katex-display" id="eq-energy"/);
+  assert.match(result, /role="region" tabindex="0" aria-label="Display equation"/);
   assert.match(result, /href="#eq-energy"/);
   assert.equal((result.match(/id="eq-energy"/g) ?? []).length, 1);
   assert.match(result, /<math><mi>E<\/mi><\/math>/);

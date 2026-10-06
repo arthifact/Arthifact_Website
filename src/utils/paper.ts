@@ -17,64 +17,46 @@ function spacing(node: RootContent | undefined): boolean {
 
 function fullWidth(node: RootContent): boolean {
   if (node.type !== "element") return false;
-  const names = classes(node);
-  // Component authors choose whether a figure spans the columns. Tables stay
-  // with the prose unless explicitly marked wide.
-  if (
-    names.some((name) =>
-      ["paper-figure", "figure-grid", "paper-table"].includes(name),
-    )
-  )
-    return names.includes("paper-wide");
-  return (
-    names.some((name) => ["paper-wide", "interactive-model"].includes(name)) ||
-    ["img", "picture", "iframe", "video"].includes(node.tagName) ||
-    containsImage(node)
+  return classes(node).some((name) =>
+    ["paper-wide", "interactive-model"].includes(name),
   );
 }
 
-function containsImage(node: RootContent): boolean {
-  return (
-    node.type === "element" &&
-    (node.tagName === "img" || node.children.some(containsImage))
-  );
-}
-
-/** Flow down the left column, then from the top of the right; headings never restart columns. */
+/** Wide floats sit above or below one uninterrupted column flow on each sheet. */
 function arrangeColumns(tree: Root): void {
-  const output: RootContent[] = [];
-  let flow: RootContent[] = [];
-  const flush = () => {
-    if (
-      !flow.some(
-        (node) =>
-          (node.type === "element" &&
-            !["style", "script", "link", "meta"].includes(node.tagName)) ||
-          (node.type === "text" && node.value.trim()),
-      )
-    ) {
-      output.push(...flow);
-      flow = [];
-      return;
-    }
-    output.push({
-      type: "element",
-      tagName: "div",
-      properties: { className: ["paper-columns"] },
-      children: flow as Element["children"],
-    });
-    flow = [];
-  };
+  const assets: RootContent[] = [];
+  const top: RootContent[] = [];
+  const bottom: RootContent[] = [];
+  const flow: RootContent[] = [];
   for (const node of tree.children) {
     if (fullWidth(node)) {
-      flush();
-      output.push(node);
-      continue;
+      const placement =
+        node.type === "element" && node.properties.dataPaperPlacement;
+      (placement === "bottom" ? bottom : top).push(node);
+    } else if (
+      node.type === "element" &&
+      ["style", "script", "link", "meta"].includes(node.tagName)
+    ) {
+      assets.push(node);
+    } else {
+      flow.push(node);
     }
-    flow.push(node);
   }
-  flush();
-  tree.children = output;
+  tree.children = [
+    ...assets,
+    ...top,
+    ...(hasContent(flow)
+      ? [
+          {
+            type: "element" as const,
+            tagName: "div",
+            properties: { className: ["paper-columns"] },
+            children: flow as Element["children"],
+          },
+        ]
+      : []),
+    ...bottom,
+  ];
 }
 
 /** Attach an authored equation anchor to its equation so a column break cannot separate them. */
@@ -114,6 +96,11 @@ function preparePaper(tree: Root, numberedSections: boolean): void {
   let section = 0;
   let table = 0;
   visit(tree, "element", (node, index, parent) => {
+    if (classes(node).includes("katex-display")) {
+      node.properties.role = "region";
+      node.properties.tabIndex = 0;
+      node.properties.ariaLabel = "Display equation";
+    }
     if (
       numberedSections &&
       node.tagName === "h2" &&

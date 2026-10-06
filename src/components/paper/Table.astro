@@ -3,11 +3,18 @@ interface Props {
   id: string;
   caption: string;
   number?: number;
+  wide?: boolean;
+  placement?: "top" | "bottom";
 }
-const { id, caption, number } = Astro.props;
+const { id, caption, number, wide = false, placement = "top" } = Astro.props;
 ---
 
-<figure class="paper-table" id={id} aria-labelledby={`${id}-caption`}>
+<figure
+  class:list={["paper-table", { "paper-wide": wide }]}
+  id={id}
+  aria-labelledby={`${id}-caption`}
+  data-paper-placement={wide ? placement : undefined}
+>
   <figcaption id={`${id}-caption`}>
     {number !== undefined && <strong>Table {number}.</strong>}{" "}{caption}
   </figcaption>
